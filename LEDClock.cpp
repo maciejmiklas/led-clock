@@ -19,7 +19,7 @@
 #define MAX7219_REG_SHUTDOWN     0xC
 #define MAX7219_REG_DISPLAYTEST  0xF
 
-#define SS 10
+#define SS 24
 
 /**
  * Transfers data to a MAX7219/MAX7221 register.
@@ -44,6 +44,7 @@ void send(uint8_t address, uint8_t value) {
 
 void clear() {
 	// clear
+	send(MAX7219_REG_DIGIT0, 0);
 	send(MAX7219_REG_DIGIT1, 0);
 	send(MAX7219_REG_DIGIT2, 0);
 	send(MAX7219_REG_DIGIT3, 0);
@@ -54,9 +55,12 @@ void clear() {
 
 }
 void setup() {
-	Serial.begin(115200);
-
 	delay(100);
+
+	util_setup();
+	log_setup();
+	log_cycle();
+
 	pinMode(SS, OUTPUT);
 
 	SPI.begin();
@@ -67,8 +71,6 @@ void setup() {
 	send(MAX7219_REG_SHUTDOWN, 1);
 
 	// display test
-	send(MAX7219_REG_DISPLAYTEST, 1);
-	delay(100);
 	send(MAX7219_REG_DISPLAYTEST, 0);
 
 	send(MAX7219_REG_INTENSITY, 15);  // character intensity: range: 0 to 15
@@ -78,6 +80,7 @@ void setup() {
 }
 
 void loop() {
+	util_cycle();
 	uint8_t row = 0;
 	for (int lightRow = 8; lightRow > 0; lightRow--) {
 		for (uint8_t digit = MAX7219_REG_DIGIT0; digit <= MAX7219_REG_DIGIT7; digit++) {
