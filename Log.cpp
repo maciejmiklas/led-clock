@@ -16,10 +16,10 @@ static void log_status() {
 	}
 	lastStatusMs = util_millis();
 	uint16_t free = util_freeRam();
-	if (lastRam != free) {
+	//if (lastRam != free) {
 		lastRam = free;
 		ln("Status -> Free RAM: %u", free);
-	}
+	//}
 }
 
 void log_cycle() {

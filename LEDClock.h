@@ -3,6 +3,8 @@
 #include "Arduino.h"
 #include "Util.h"
 #include "Log.h"
+#include "Sprite.h"
+#include "SpriteASCII.h"
 
 //end of add your includes here
 #ifdef __cplusplus

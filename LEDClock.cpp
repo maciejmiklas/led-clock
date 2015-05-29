@@ -19,7 +19,7 @@
 #define MAX7219_REG_SHUTDOWN     0xC
 #define MAX7219_REG_DISPLAYTEST  0xF
 
-#define SS 24
+#define SS 22
 
 /**
  * Transfers data to a MAX7219/MAX7221 register.
@@ -59,7 +59,6 @@ void setup() {
 
 	util_setup();
 	log_setup();
-	log_cycle();
 
 	pinMode(SS, OUTPUT);
 
@@ -76,34 +75,23 @@ void setup() {
 	send(MAX7219_REG_INTENSITY, 15);  // character intensity: range: 0 to 15
 	send(MAX7219_REG_SCANLIMIT, 7);   // show all 8 digits
 	send(MAX7219_REG_DECODEMODE, 0);  // using an led matrix (not digits)
+
 	clear();
 }
 
 void loop() {
 	util_cycle();
-	uint8_t row = 0;
-	for (int lightRow = 8; lightRow > 0; lightRow--) {
-		for (uint8_t digit = MAX7219_REG_DIGIT0; digit <= MAX7219_REG_DIGIT7; digit++) {
-			uint8_t rowMask = 1;
-			for (uint8_t i = 0; i < lightRow; i++) {
-				send(digit, row | rowMask);
-				rowMask = rowMask << 1;
-				delay(10);
-			}
-			delay(10);
+	log_cycle();
+	ln("start");
+	for (uint8_t fontIdx = 0; fontIdx < ASCII_FONT_SIZE; fontIdx++) {
+		Sprite spr = ASCII_FONT[fontIdx];
+		for (uint8_t sprIdx = MAX7219_REG_DIGIT0; sprIdx <= MAX7219_REG_DIGIT7; sprIdx++) {
+			send(sprIdx, spr.data[sprIdx - 1]);
 		}
-		row = row | 1 << (lightRow - 1);
+		ln("%02x - 0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x", fontIdx, spr.data[0], spr.data[1],
+				spr.data[2], spr.data[3], spr.data[4], spr.data[5], spr.data[6], spr.data[7]);
+		delay(100);
 	}
-	for (int x = 0; x < 5; x++) {
-		for (int i = 15; i >= 0; i--) {
-			send(MAX7219_REG_INTENSITY, i);
-			delay(100);
-		}
-		for (int i = 0; i <= 15; i++) {
-			send(MAX7219_REG_INTENSITY, i);
-			delay(100);
-		}
-	}
-	clear();
+	ln("end");
 }
 

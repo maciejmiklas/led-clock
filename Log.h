@@ -13,6 +13,5 @@ void log_setup();
 void log_cycle();
 
 void ln(const char *fmt, ...);
-void de(const char *fmt, ...);
 
 #endif /* Log_H_ */

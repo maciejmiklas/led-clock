@@ -6,6 +6,10 @@
 class Sprite {
 
 private:
+	uint8_t reverse(uint8_t in);
+
+public:
+	Sprite(uint8_t width, uint8_t height, ...);
 
 	// "width <= 8"
 	uint8_t width;
@@ -17,11 +21,6 @@ private:
 	// and data[7] is the bottom line. Array can have maximal 8 elements, but less is
 	// also possible.
 	uint8_t *data;
-
-public:
-	Sprite(uint8_t width, uint8_t height, ...);
-
-	uint8_t* getData();
 };
 
 #endif /* SPRITE_H_ */
