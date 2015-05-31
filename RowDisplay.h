@@ -10,11 +10,11 @@ enum Direction {
 
 /*
  * Display controls multiple 8x8-LED-Matrix elements connected together to a single row.
- * For example ten pieces of 8x8-Matrix will result in display consisting of 80x8 LEDs (8 lines, each 80 pixels).
+ * For example ten pieces of 8x8-Matrix will result in row consisting of 80x8 LEDs (8 lines, each 80 pixels).
  * Each 8x8-Matrix is controlled by MAX7291 connected trough SPI and it requires separate
  * Slave Select line.
  * We are using hardware controlled SPI, depending on Arduino version it occupies different pins. On Mega
- * MOSI is on 51 and SCK on 52. Plus extra SS pin for each MAX7291.
+ * MOSI is on 51, SCK on 52 and MISO is not used. We also need extra SS pin for each MAX7291.
  *
  * Each font has 8x8 pixels and can be displayed on single 8x8-Matrix.
  */
@@ -45,6 +45,7 @@ public:
 
 	/**
 	 * Replaces current text with new one. Both should have the same length.
+	 *
 	 * Function automatically determines characters that has changed
 	 * and substitutes only those by playing animation in given direction.
 	 */
@@ -62,12 +63,15 @@ public:
 
 	/**
 	 * Scrolls given text in given direction over few 8x8-Matrix elements.
-	 * The amount is given by #ssSize and SS lines as vararg.
+	 *
+	 * The amount of 8x8-Matrix elements is given by #ssSize.
+	 *
+	 * Vararg parameter gives list of Slave Select lines in order of the occurrence of 8x8-Matrix elements within a row.
 	 */
 	void scroll(uint8_t* text, Direction direction, uint8_t ssSize, ...);
 
 private:
-	/* Array containing Slave Select lines, starting form left to right */
+	/* Array containing Slave Select lines, starting form left to the right */
 	uint8_t* ss;
 
 	/* Amount of SS lines.*/

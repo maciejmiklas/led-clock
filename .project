@@ -28,6 +28,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>LEDDisplay</name>
+			<type>2</type>
+			<locationURI>LEDClockLEDDisplay/LEDDisplay</locationURI>
+		</link>
+		<link>
 			<name>SPI</name>
 			<type>2</type>
 			<locationURI>ArduinoLibPath/SPI</locationURI>
