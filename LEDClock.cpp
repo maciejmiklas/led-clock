@@ -1,25 +1,62 @@
 #include "LEDClock.h"
 #include "SPI.h"
 
-// https://github.com/squix78/MAX7219LedMatrix
-
-#define SS 22
-
-
+Display* disp;
 
 void setup() {
-	delay(100);
+	delay(10);
 
 	util_setup();
 	log_setup();
 
+	uint8_t **ss = new uint8_t*[5];
+	for (int i = 0; i < 5; i++) {
+		ss[i] = new uint8_t[4];
+	}
 
+	// row 0
+	ss[0][0] = 22;
+	ss[1][0] = 23;
+	ss[2][0] = 24;
+	ss[3][0] = 25;
+
+	// row 1
+	ss[0][1] = 26;
+	ss[1][1] = 27;
+	ss[2][1] = 28;
+	ss[3][1] = 29;
+
+	// row 2
+	ss[0][2] = 30;
+	ss[1][2] = 31;
+	ss[2][2] = 32;
+	ss[3][2] = 33;
+
+	// row 3
+	ss[0][3] = 34;
+	ss[1][3] = 35;
+	ss[2][3] = 36;
+	ss[3][3] = 37;
+
+	// row 4
+	ss[0][4] = 38;
+	ss[1][4] = 39;
+	ss[2][4] = 40;
+	ss[3][4] = 41;
+
+	disp = new Display(4, 5, ss);
+	disp->setup();
+
+	for (int i = 0; i < 32; i++) {
+		debug("GO %d",i);
+		disp->print(i, 0, 5, 3, ss);
+	}
 }
 
 void loop() {
 	util_cycle();
 	log_cycle();
-	ln("start");
+//	log("start");
 //	for (uint8_t fontIdx = 0; fontIdx < ASCII_FONT_SIZE; fontIdx++) {
 //		Sprite spr = ASCII_FONT[fontIdx];
 //		for (uint8_t sprIdx = MAX7219_REG_DIGIT0; sprIdx <= MAX7219_REG_DIGIT7; sprIdx++) {

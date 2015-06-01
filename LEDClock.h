@@ -3,7 +3,7 @@
 #include "Arduino.h"
 #include "Util.h"
 #include "Log.h"
-#include "Font.h"
+#include "Display.h"
 
 //end of add your includes here
 #ifdef __cplusplus

@@ -18,6 +18,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/Upload to Laptop.launch</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
@@ -27,6 +37,11 @@
 		<nature>it.baeyens.arduinonature</nature>
 	</natures>
 	<linkedResources>
+		<link>
+			<name>ArduinoUtil</name>
+			<type>2</type>
+			<locationURI>LEDClockArduinoUtil/ArduinoUtil</locationURI>
+		</link>
 		<link>
 			<name>LEDDisplay</name>
 			<type>2</type>
