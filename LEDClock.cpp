@@ -4,10 +4,10 @@
 Display* disp;
 
 void setup() {
-	delay(10);
-
 	util_setup();
 	log_setup();
+
+	delay(10);
 
 	uint8_t **ss = new uint8_t*[5];
 	for (int i = 0; i < 5; i++) {
@@ -47,9 +47,9 @@ void setup() {
 	disp = new Display(4, 5, ss);
 	disp->setup();
 
-	for (int i = 0; i < 32; i++) {
-		debug("GO %d",i);
-		disp->print(i, 0, 5, 3, ss);
+	for (int x = 0; x < 32; x++) {
+		debug("GO %d",x);
+		disp->print(x, 0, 17, 3, ss);
 	}
 }
 
