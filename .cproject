@@ -126,8 +126,12 @@
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="LEDClock.null.275676005" name="LEDClock"/>
+		<project id="LEDClock.null.1361381142" name="LEDClock"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/LEDClock"/>
+		</configuration>
+	</storageModule>
 </cproject>

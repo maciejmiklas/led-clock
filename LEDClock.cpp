@@ -2,13 +2,13 @@
 
 Display* disp;
 
-static uint8_t** setupSS() {
-	uint8_t **ss = new uint8_t*[6];
+static ssLine** setupSS() {
+	ssLine **ss = new ssLine*[6];
 	for (int i = 0; i < 6; i++) {
-		ss[i] = new uint8_t[5];
+		ss[i] = new ssLine[5];
 	}
 
-	// row 0
+	// kit-row 0
 	ss[0][0] = 22;
 	ss[1][0] = 23;
 	ss[2][0] = 24;
@@ -16,7 +16,7 @@ static uint8_t** setupSS() {
 	ss[4][0] = 26;
 	ss[5][0] = 27;
 
-	// row 1
+	// kit-row 1
 	ss[0][1] = 28;
 	ss[1][1] = 29;
 	ss[2][1] = 30;
@@ -24,7 +24,7 @@ static uint8_t** setupSS() {
 	ss[4][1] = 32;
 	ss[5][1] = 33;
 
-	// row 2
+	// kit-row 2
 	ss[0][2] = 34;
 	ss[1][2] = 35;
 	ss[2][2] = 36;
@@ -32,7 +32,7 @@ static uint8_t** setupSS() {
 	ss[4][2] = 38;
 	ss[5][2] = 39;
 
-	// row 3
+	// kit-row 3
 	ss[0][3] = 40;
 	ss[1][3] = 41;
 	ss[2][3] = 42;
@@ -40,7 +40,7 @@ static uint8_t** setupSS() {
 	ss[4][3] = 44;
 	ss[5][3] = 45;
 
-	// row 4
+	// kit-row 4
 	ss[0][4] = 46;
 	ss[1][4] = 47;
 	ss[2][4] = 48;
@@ -52,10 +52,9 @@ static uint8_t** setupSS() {
 }
 
 void printA() {
-	uint8_t **ss = setupSS();
+	ssLine **ss = setupSS();
 	disp = new Display(4, 5, ss);
 	disp->setup();
-
 
 	uint8_t **data = new uint8_t*[4];
 	for (int i = 0; i < 4; i++) {
@@ -70,12 +69,10 @@ void printA() {
 	disp->paint(4, 5, 8, 4, data);
 }
 
-
 void printB() {
-	uint8_t **ss = setupSS();
+	ssLine **ss = setupSS();
 	disp = new Display(6, 5, ss);
 	disp->setup();
-
 
 	uint8_t **data = new uint8_t*[12];
 	for (int i = 0; i < 12; i++) {
@@ -145,12 +142,28 @@ void printB() {
 	disp->paint(18, 13, 18, 12, data);
 }
 
+void printC() {
+	ssLine **ss = setupSS();
+	disp = new Display(6, 5, ss);
+	disp->setup();
+
+	TextArea8x8 area = TextArea8x8(disp, 16);
+
+	uint8_t** text = new uint8_t*[2];
+	text[0] = FONT_ASCI[65];
+	text[1] = FONT_ASCI[33];
+
+	//area.box(0, 0, text, 2);
+
+	delete (text);
+}
+
 void setup() {
 	util_setup();
 	log_setup();
 
 	delay(10);
-	printB();
+	printC();
 }
 
 void loop() {

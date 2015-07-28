@@ -4,6 +4,8 @@
 #include "Util.h"
 #include "Log.h"
 #include "Display.h"
+#include "TextArea8x8.h"
+#include "Font8x8.h"
 
 //end of add your includes here
 #ifdef __cplusplus
