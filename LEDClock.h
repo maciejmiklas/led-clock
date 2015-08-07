@@ -1,5 +1,6 @@
-#ifndef LEDClock_H_
-#define LEDClock_H_
+#ifndef LEDCLOCK_H_
+#define LEDCLOCK_H_
+
 #include "Arduino.h"
 #include "Util.h"
 #include "Log.h"
@@ -21,4 +22,4 @@ void setup();
 
 
 
-#endif /* LEDClock_H_ */
+#endif /* LEDCLOCK_H_ */
