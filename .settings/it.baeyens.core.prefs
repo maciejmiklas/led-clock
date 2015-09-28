@@ -1,7 +1,7 @@
 avrtarget/ClockFrequency=16000000
 avrtarget/ExtRAMSize=0
 avrtarget/ExtendedRAM=false
-avrtarget/MCUType=atmega328p
+avrtarget/MCUType=atmega2560
 avrtarget/UseEEPROM=false
 avrtarget/UseExtendedRAMforHeap=true
 avrtarget/avrdude/BitBangDelay=
@@ -19,5 +19,4 @@ avrtarget/avrdude/ProgrammerID=programmerconfig.15
 avrtarget/avrdude/UseCounter=false
 avrtarget/avrdude/WriteEEPROM=false
 avrtarget/avrdude/WriteFlash=true
-avrtarget/perConfig=false
 eclipse.preferences.version=1

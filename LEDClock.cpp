@@ -57,25 +57,19 @@ void setup() {
 	log_setup();
 
 	ss = setupSS();
-	disp = new Display(6, 5, ss);
+	disp = new Display(5, 1, ss);
 	disp->setup();
-
-	log_freeRAM("after setup");
 }
 
 void loop() {
 	util_cycle();
 	log_cycle();
 
-	TextArea8x8 area = TextArea8x8(disp, 16);
-	log_freeRAM("A");
-
-	area.box(5, 5, 2, 58, 61);
-	log_freeRAM("B");
-
+	TextArea8x8 area = TextArea8x8(disp, 40, 100);
+	//area.box(0, 0, 5, 68, 65, 78, 73, 76); //A-B-C
 	while (true) {
+		area.scroll(0, 0, 6, 68, 65, 78, 73, 69, 76);
 		log_freeRAM("loop");
-		delay(1000000);
 	}
 }
 
