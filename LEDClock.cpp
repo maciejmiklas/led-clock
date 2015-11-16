@@ -4,50 +4,40 @@ static Display* disp;
 static ssLine **ss;
 
 static ssLine** setupSS() {
-	ssLine **ss = new ssLine*[6];
-	for (int i = 0; i < 6; i++) {
-		ss[i] = new ssLine[5];
+	ssLine **ss = new ssLine*[8];
+	for (int i = 0; i < 8; i++) {
+		ss[i] = new ssLine[3];
 	}
 
-	// kit-row 0
-	ss[0][0] = 22;
-	ss[1][0] = 23;
-	ss[2][0] = 24;
-	ss[3][0] = 25;
-	ss[4][0] = 26;
-	ss[5][0] = 27;
+	// first row
+	ss[0][0] = 48;
+	ss[1][0] = 46;
+	ss[2][0] = 49;
+	ss[3][0] = 47;
+	ss[4][0] = 45;
+	ss[5][0] = 43;
+	ss[6][0] = 41;
+	ss[7][0] = 39;
 
-	// kit-row 1
-	ss[0][1] = 28;
-	ss[1][1] = 29;
-	ss[2][1] = 30;
-	ss[3][1] = 31;
-	ss[4][1] = 32;
-	ss[5][1] = 33;
+	// second row
+	ss[0][1] = 36;
+	ss[1][1] = 34;
+	ss[2][1] = 32;
+	ss[3][1] = 30;
+	ss[4][1] = 28;
+	ss[5][1] = 26;
+	ss[6][1] = 24;
+	ss[7][1] = 22;
 
-	// kit-row 2
-	ss[0][2] = 34;
+	// third row
+	ss[0][2] = 37;
 	ss[1][2] = 35;
-	ss[2][2] = 36;
-	ss[3][2] = 37;
-	ss[4][2] = 38;
-	ss[5][2] = 39;
-
-	// kit-row 3
-	ss[0][3] = 40;
-	ss[1][3] = 41;
-	ss[2][3] = 42;
-	ss[3][3] = 43;
-	ss[4][3] = 44;
-	ss[5][3] = 45;
-
-	// kit-row 4
-	ss[0][4] = 46;
-	ss[1][4] = 47;
-	ss[2][4] = 48;
-	ss[3][4] = 49;
-	ss[4][4] = 50;
-	ss[5][4] = 51;
+	ss[2][2] = 33;
+	ss[3][2] = 31;
+	ss[4][2] = 29;
+	ss[5][2] = 27;
+	ss[6][2] = 25;
+	ss[7][2] = 23;
 
 	return ss;
 }
@@ -57,7 +47,7 @@ void setup() {
 	log_setup();
 
 	ss = setupSS();
-	disp = new Display(5, 1, ss);
+	disp = new Display(8, 3, ss);
 	disp->setup();
 }
 
@@ -65,11 +55,14 @@ void loop() {
 	util_cycle();
 	log_cycle();
 
-	TextArea8x8 area = TextArea8x8(disp, 40, 100);
-	//area.box(0, 0, 5, 68, 65, 78, 73, 76); //A-B-C
-	while (true) {
-		area.scroll(0, 0, 6, 68, 65, 78, 73, 69, 76);
-		log_freeRAM("loop");
+	StaticTextArea sta = StaticTextArea(disp, 48);
+	for (uint8_t y = 0; y < 30; y++) {
+		for (uint8_t x = 0; x < 70; x++) {
+			sta.box(x, y, 6, 68, 97, 110, 105, 101, 108);
+			//	delay(2000);
+			disp->clear();
+		}
 	}
+
 }
 
