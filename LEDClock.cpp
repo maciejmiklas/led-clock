@@ -56,11 +56,13 @@ void loop() {
 	log_cycle();
 
 	StaticTextArea sta = StaticTextArea(disp, 48);
-	for (uint8_t y = 0; y < 30; y++) {
+	for (uint8_t y = 0; y < 25; y++) {
 		for (uint8_t x = 0; x < 70; x++) {
 			sta.box(x, y, 6, 68, 97, 110, 105, 101, 108);
-			//	delay(2000);
-			disp->clear();
+			disp->flush();
+
+			disp->clear(x, y, 48, 8);
+			//delay(10);
 		}
 	}
 
