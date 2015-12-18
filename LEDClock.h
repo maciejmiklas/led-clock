@@ -5,8 +5,8 @@
 #include "Util.h"
 #include "Log.h"
 #include "Display.h"
-#include "ScrollingTextArea.h"
-#include "StaticTextArea.h"
+#include "Scrolling8x8TextArea.h"
+#include "Static8x8TextArea.h"
 #include "Font8x8.h"
 
 //end of add your includes here
