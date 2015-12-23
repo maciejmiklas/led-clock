@@ -49,7 +49,7 @@ static ss_t** setupSS() {
 }
 
 Scrolling8x8TextArea *sca;
-
+char *text;
 void setup() {
 	util_setup();
 	log_setup();
@@ -60,19 +60,19 @@ void setup() {
 
 	sca = new Scrolling8x8TextArea(disp, 48, 100, 1);
 	sca->init();
-	sca->scroll(0, 0, true, "Hallo Artur i Damian");
-}
-
-void loop_() {
-	util_cycle();
-	log_cycle();
-	log_freeRAM("loop");
-	sca->cycle();
-
-	delay(10000);
+	text = "Hallo Artur i Daniel";
+	sca->scroll(0, 0, true, text);
 }
 
 void loop() {
+	util_cycle();
+	log_cycle();
+	sca->cycle();
+	disp->flush();
+	delay(50);
+}
+
+void loop_() {
 	util_cycle();
 	log_cycle();
 	Static8x8TextArea sta = Static8x8TextArea(disp, 48);
