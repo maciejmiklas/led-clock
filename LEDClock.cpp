@@ -48,8 +48,15 @@ static ss_t** setupSS() {
 	return ss;
 }
 
-Scrolling8x8TextArea *sca;
-char *text;
+Scrolling8x8TextArea *sca1;
+char *text1;
+
+Scrolling8x8TextArea *sca2;
+char *text2;
+
+Scrolling8x8TextArea *sca3;
+char *text3;
+
 void setup() {
 	util_setup();
 	log_setup();
@@ -57,34 +64,25 @@ void setup() {
 	ss = setupSS();
 	disp = new Display(8, 3, ss);
 	disp->setup();
+	disp->clear();
 
-	sca = new Scrolling8x8TextArea(disp, 48, 100, 1);
-	sca->init();
-	text = "Hallo Artur i Daniel";
-	sca->scroll(0, 0, true, text);
+	sca1 = new Scrolling8x8TextArea(disp, 64, 50, 1);
+	sca1->init();
+	text1 = "Danielowi i Arturkowi zyczymy Wesolych Swiat Bozego Narodzenia";
+	sca1->scroll(0, 0, true, text1);
+
+	sca2 = new Scrolling8x8TextArea(disp, 64, 0, 2);
+	sca2->init();
+	text2 = "Wlazl kotek na plotek i mruga - ladna to piosenka nie dluga ;)";
+	sca2->scroll(0, 8, true, text2);
 }
 
 void loop() {
 	util_cycle();
 	log_cycle();
-	sca->cycle();
+	sca1->cycle();
+	sca2->cycle();
+
 	disp->flush();
-	delay(50);
-}
-
-void loop_() {
-	util_cycle();
-	log_cycle();
-	Static8x8TextArea sta = Static8x8TextArea(disp, 48);
-//	sta.box(0, 0, 6, 68, 97, 110, 105, 101, 108);
-//	disp->flush();
-
-	for (uint8_t y = 0; y < 24; y++) {
-		for (uint8_t x = 0; x < 70; x++) {
-			sta.box(x, y, 6, 68, 97, 110, 105, 101, 108);
-			disp->flush();
-			disp->clear(x, y, 48, 8);
-		}
-	}
 }
 
