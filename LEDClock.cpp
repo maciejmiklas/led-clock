@@ -1,6 +1,7 @@
 #include "LEDClock.h"
 
 Display *disp;
+DateTimeDisplay *dateTimeDisplay;
 static ss_t **ss;
 
 /**
@@ -9,7 +10,7 @@ static ss_t **ss;
  * 36, 34, 32, 30, 28, 26, 24, 22
  * 37, 35, 33, 31, 29, 27, 25, 23
  */
-static ss_t** setupSS() {
+static ss_t** setupSelectSlaveLines() {
 	ss_t **ss = new ss_t*[3];
 	for (int i = 0; i < 8; i++) {
 		ss[i] = new ss_t[8];
@@ -47,42 +48,35 @@ static ss_t** setupSS() {
 
 	return ss;
 }
+StaticText8x8 *hour;
 
-Scrolling8x8TextArea *sca1;
-char *text1;
-
-Scrolling8x8TextArea *sca2;
+ScrollingText8x8 *sca2;
 char *text2;
-
-Scrolling8x8TextArea *sca3;
-char *text3;
 
 void setup() {
 	util_setup();
 	log_setup();
 
-	ss = setupSS();
+	ss = setupSelectSlaveLines();
 	disp = new Display(8, 3, ss);
 	disp->setup();
 	disp->clear();
 
-	sca1 = new Scrolling8x8TextArea(disp, 64, 50, 1);
-	sca1->init();
-	text1 = "Danielowi i Arturkowi zyczymy Wesolych Swiat Bozego Narodzenia";
-	sca1->scroll(0, 0, true, text1);
+	dateTimeDisplay = new DateTimeDisplay(disp);
+	hour = new StaticText8x8(disp, 16);
 
-	sca2 = new Scrolling8x8TextArea(disp, 64, 0, 2);
+
+	sca2 = new ScrollingText8x8(disp, 64, 0, 2);
 	sca2->init();
 	text2 = "Wlazl kotek na plotek i mruga - ladna to piosenka nie dluga ;)";
-	sca2->scroll(0, 8, true, text2);
+	sca2->scroll(0, 8, ScrollingText8x8::LOOP, text2);
 }
 
 void loop() {
 	util_cycle();
 	log_cycle();
-	sca1->cycle();
 	sca2->cycle();
-
+	dateTimeDisplay->cycle();
 	disp->flush();
 }
 

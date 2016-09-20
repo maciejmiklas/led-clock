@@ -2,12 +2,10 @@
 #define LEDCLOCK_H_
 
 #include "Arduino.h"
-#include "Util.h"
-#include "Log.h"
+#include "ArdLog.h"
 #include "Display.h"
-#include "Scrolling8x8TextArea.h"
-#include "Static8x8TextArea.h"
-#include "Font8x8.h"
+#include "ScrollingText8x8.h"
+#include "DateTimeDisplay.h"
 
 //end of add your includes here
 #ifdef __cplusplus

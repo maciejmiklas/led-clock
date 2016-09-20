@@ -28,9 +28,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>ArduinoUtil</name>
+			<name>ArdLog</name>
 			<type>2</type>
-			<locationURI>LEDClockArduinoUtil/ArduinoUtil</locationURI>
+			<locationURI>LEDClockArdLog/ArdLog</locationURI>
 		</link>
 		<link>
 			<name>LEDDisplay</name>
