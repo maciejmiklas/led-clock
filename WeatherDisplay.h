@@ -18,13 +18,28 @@
 #define WEATHERDISPLAY_H_
 
 #include "Canvas.h"
+#include "SerialAPI.h"
+#include "ScrollingText8x8.h"
 
 class WeatherDisplay {
 public:
-	WeatherDisplay(Canvas *canvas);
+	WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI);
 	virtual ~WeatherDisplay();
+	void cycle();
 private:
+	const static uint32_t WEATHER_REFRESH_MS = 3600000; // every hour
+	const static uint8_t WEATHER_TEXT_WIDTH = 64;
+	const static uint16_t WEATHER_TEXT_ANIMATE_DELAY_MS = 30;
+	const static uint8_t WEATHER_TEXT_BUFFER_SIZE = 150;
+
 	Canvas * const canvas;
+	SerialAPI * const serialAPI;
+	ScrollingText8x8 weatherTextArea;
+	uint32_t lastWeatherRefresh;
+	char buf[WEATHER_TEXT_BUFFER_SIZE];
+
+	void refreshWeather();
+	uint8_t inline sep(uint8_t idx, uint8_t chars);
 };
 
 #endif /* WEATHERDISPLAY_H_ */

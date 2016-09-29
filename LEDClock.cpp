@@ -2,6 +2,8 @@
 
 Display *disp;
 DateTimeDisplay *dateTimeDisplay;
+WeatherDisplay *weatherDisplay;
+SerialAPI * serialAPI;
 static ss_t **ss;
 
 /**
@@ -48,13 +50,12 @@ static ss_t** setupSelectSlaveLines() {
 
 	return ss;
 }
-StaticText8x8 *hour;
 
 ScrollingText8x8 *sca2;
 char *text2;
 
 void setup() {
-	util_setup();
+	dutil_setup();
 	log_setup();
 
 	ss = setupSelectSlaveLines();
@@ -62,21 +63,17 @@ void setup() {
 	disp->setup();
 	disp->clear();
 
-	dateTimeDisplay = new DateTimeDisplay(disp);
-	hour = new StaticText8x8(disp, 16);
+	serialAPI = new SerialAPI();
 
-
-	sca2 = new ScrollingText8x8(disp, 64, 0, 2);
-	sca2->init();
-	text2 = "Wlazl kotek na plotek i mruga - ladna to piosenka nie dluga ;)";
-	sca2->scroll(0, 8, ScrollingText8x8::LOOP, text2);
+	dateTimeDisplay = new DateTimeDisplay(disp, serialAPI);
+	weatherDisplay = new WeatherDisplay(disp, serialAPI);
 }
 
 void loop() {
-	util_cycle();
+	dutil_cycle();
 	log_cycle();
-	sca2->cycle();
 	dateTimeDisplay->cycle();
+	weatherDisplay->cycle();
 	disp->flush();
 }
 

@@ -30,8 +30,40 @@ class SerialAPI {
 public:
 	SerialAPI();
 	virtual ~SerialAPI();
+
+	/** HH, always 2 characters. Range: 0 to 23 */
+	char* getTime_hour();
+
+	/** mm, always 2 characters. range: 1 to 60. */
+	char* getTime_minutes();
+
+	/** " Sun ", " Mon ", " Tue ", " Wed ", " Thu ", " Fri ", " Sat ", always 5 characters */
+	char* getDate_day();
+
+	/** yy-mm, always 5 characters */
+	char* getDate_full();
+
+	/** "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", always 3 characters */
+	char* getWeather_day(uint8_t day);
+
+	/** "Partly Cloudy", "Thunderstorms" or "Sunny" */
+	char* getWeather_text(uint8_t day);
+
+	/** min temp in celclus */
+	char* getWeather_low(uint8_t day);
+
+	/** max temp in celclus */
+	char* getWeather_high(uint8_t day);
+
 private:
+	char sbuf[25];
 	inline HardwareSerial& serial();
+
+	/**
+	 * Sends given #request into serial port and writes response into #response array. Method returns response length
+	 * without terminating characters.
+	 */
+	uint8_t cmd(char *response, const char *request, uint8_t requestLength);
 };
 
 #endif /* SERIALAPI_H_ */

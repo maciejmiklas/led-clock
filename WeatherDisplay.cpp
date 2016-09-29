@@ -16,12 +16,58 @@
  */
 #include "WeatherDisplay.h"
 
-WeatherDisplay::WeatherDisplay(Canvas *canvas):canvas(canvas) {
-	// TODO Auto-generated constructor stub
+WeatherDisplay::WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI) :
+		canvas(canvas), serialAPI(serialAPI), weatherTextArea(canvas, WEATHER_TEXT_WIDTH, WEATHER_TEXT_ANIMATE_DELAY_MS,
+				1), lastWeatherRefresh(0) {
+	weatherTextArea.init();
 
+	refreshWeather();
 }
 
 WeatherDisplay::~WeatherDisplay() {
-	// TODO Auto-generated destructor stub
 }
 
+void WeatherDisplay::refreshWeather() {
+	uint8_t idx = 0;
+
+	for (uint8_t day = 1; day <= 3; day++) {
+
+		// day
+		idx = appendText(buf, idx, WEATHER_TEXT_BUFFER_SIZE, serialAPI->getWeather_day(day));
+		buf[idx++] = 3;
+		buf[idx++] = 4;
+		buf[idx++] = ' ';
+
+		// low temp
+		buf[idx++] = 2;
+		idx = appendText(buf, idx, WEATHER_TEXT_BUFFER_SIZE, serialAPI->getWeather_low(day));
+		idx = sep(idx, 1);
+
+		// high temp
+		buf[idx++] = 1;
+		idx = appendText(buf, idx, WEATHER_TEXT_BUFFER_SIZE, serialAPI->getWeather_high(day));
+		idx = sep(idx, 1);
+
+		// text
+		idx = appendText(buf, idx, WEATHER_TEXT_BUFFER_SIZE, serialAPI->getWeather_text(day));
+		idx = sep(idx, 5);
+	}
+	buf[idx++] = '\0';
+
+#if LOG
+	log(F("Weather buf: %d -> %s"), idx, buf);
+#endif
+
+	weatherTextArea.scroll(0, 16, ScrollingText8x8::CONTINOUS_LOOP, buf);
+}
+
+uint8_t inline WeatherDisplay::sep(uint8_t idx, uint8_t chars) {
+	for (uint8_t i = 0; i < chars; i++) {
+		buf[idx++] = ' ';
+	}
+	return idx;
+}
+
+void WeatherDisplay::cycle() {
+	weatherTextArea.cycle();
+}

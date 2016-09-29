@@ -6,6 +6,8 @@
 #include "Display.h"
 #include "ScrollingText8x8.h"
 #include "DateTimeDisplay.h"
+#include "WeatherDisplay.h"
+#include "SerialAPI.h"
 
 //end of add your includes here
 #ifdef __cplusplus
