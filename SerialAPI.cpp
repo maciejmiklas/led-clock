@@ -52,11 +52,11 @@ char* SerialAPI::getDate_day() {
 }
 
 char* SerialAPI::getDate_full() {
-	sbuf[0] = '1';
-	sbuf[1] = '0';
+	sbuf[0] = '2';
+	sbuf[1] = '3';
 	sbuf[2] = '-';
-	sbuf[3] = '2';
-	sbuf[4] = '3';
+	sbuf[3] = '1';
+	sbuf[4] = '0';
 	sbuf[5] = '\0';
 	return sbuf;
 }

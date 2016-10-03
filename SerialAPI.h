@@ -40,7 +40,7 @@ public:
 	/** " Sun ", " Mon ", " Tue ", " Wed ", " Thu ", " Fri ", " Sat ", always 5 characters */
 	char* getDate_day();
 
-	/** yy-mm, always 5 characters */
+	/** dd-mm, always 5 characters */
 	char* getDate_full();
 
 	/** "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", always 3 characters */

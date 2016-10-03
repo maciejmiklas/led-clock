@@ -21,25 +21,48 @@
 #include "SerialAPI.h"
 #include "ScrollingText8x8.h"
 
+const static uint8_t WEATHER_ICON_DISPLAYS = 6;
+const static uint8_t WEATHER_ICONS = 7;
+const static uint8_t WEATHER_ICON_SIZE = WEATHER_ICON_DISPLAYS * WEATHER_ICONS;
+
 class WeatherDisplay {
 public:
 	WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI);
 	virtual ~WeatherDisplay();
 	void cycle();
 private:
+	const static uint8_t ICON_IDX_MIX_SUN_RAIN = 0;
+	const static uint8_t ICON_IDX_PARTLY_SUNNY = 6;
+	const static uint8_t ICON_IDX_RAIN = 12;
+	const static uint8_t ICON_IDX_THUNDERSTORM = 18;
+	const static uint8_t ICON_IDX_MIX_SUN_THUNDERSTORM = 24;
+	const static uint8_t ICON_IDX_MOON = 30;
+	const static uint8_t ICON_IDX_MOO1 = 36;
+
 	const static uint32_t WEATHER_REFRESH_MS = 3600000; // every hour
-	const static uint8_t WEATHER_TEXT_WIDTH = 64;
-	const static uint16_t WEATHER_TEXT_ANIMATE_DELAY_MS = 30;
-	const static uint8_t WEATHER_TEXT_BUFFER_SIZE = 150;
+	const static uint8_t TEXT_WIDTH_PX = 64;
+	const static uint16_t TEXT_ANIMATE_DELAY_MS = 30;
+	const static uint8_t TEXT_BUFFER_SIZE = 150;
+	const static uint8_t ICON_BYTE_WIDTH = 3;
+	const static uint8_t ICON_ROWS = 2;
+	const static uint8_t ICON_ROW_BYTES = 3;
+	const static uint8_t ICON_BYTES = ICON_ROWS * ICON_ROW_BYTES;
+	const static uint8_t ICON_HEIGHT_PX = 16;
+	const static uint8_t ICON_WIDTH_PX = 24;
+	const static uint8_t ICON_START_X_PX = 40;
+	const static uint8_t ICON_START_Y_PX = 0;
 
 	Canvas * const canvas;
 	SerialAPI * const serialAPI;
 	ScrollingText8x8 weatherTextArea;
 	uint32_t lastWeatherRefresh;
-	char buf[WEATHER_TEXT_BUFFER_SIZE];
+	char buf[TEXT_BUFFER_SIZE];
+	uint8_t ** const iconData;
 
 	void refreshWeather();
+	void refreshIcon();
 	uint8_t inline sep(uint8_t idx, uint8_t chars);
+	void inline copyIconData(uint8_t iconIdx);
 };
 
 #endif /* WEATHERDISPLAY_H_ */
