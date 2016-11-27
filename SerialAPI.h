@@ -18,6 +18,8 @@
 #define SERIALAPI_H_
 
 #include "Arduino.h"
+#include "ArdLog.h"
+#include "DispUtil.h"
 
 /**
  * 4 serial hardware ports are supported: 1,2,3. If all are set to false we will use default Serial.
@@ -31,20 +33,21 @@ public:
 	SerialAPI();
 	virtual ~SerialAPI();
 
-	/** HH, always 2 characters. Range: 0 to 23 */
-	char* getTime_hour();
+	/** Return ESP debug info. */
+	char* getESPStatus();
 
-	/** mm, always 2 characters. range: 1 to 60. */
-	char* getTime_minutes();
+	// time of local time in 24h format. HH and MM have always 2 characters.
+	char* getTime_HH();
+	char* getTime_MM();
 
-	/** " Sun ", " Mon ", " Tue ", " Wed ", " Thu ", " Fri ", " Sat ", always 5 characters */
-	char* getDate_day();
+	/** "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", always 3 characters */
+	char* getDate_DDD();
 
-	/** dd-mm, always 5 characters */
-	char* getDate_full();
+	/** DD, always 2 characters */
+	char* getDate_DD();
 
-	/** "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", always 3 characters */
-	char* getWeather_day(uint8_t day);
+	/** DD, always 2 characters */
+	char* getDate_MM();
 
 	/** "Partly Cloudy", "Thunderstorms" or "Sunny" */
 	char* getWeather_text(uint8_t day);
@@ -55,15 +58,29 @@ public:
 	/** max temp in celclus */
 	char* getWeather_high(uint8_t day);
 
+	uint8_t getWeather_code(uint8_t day);
+
+	/** "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", always 3 characters */
+	char* getWeather_DDD(uint8_t day);
+
+	/** read remaining data from serial to prevent errors */
+	inline void readGarbage();
+
 private:
-	char sbuf[25];
+	const static uint32_t SERIAL_BAUD = 115200;
+
+	// keep a large buffer in order to be able to show possible errors
+	const static uint8_t SBUF_SIZE = 64;
+	char sbuf[SBUF_SIZE];
 	inline HardwareSerial& serial();
+	uint8_t lastReadBytes;
 
 	/**
 	 * Sends given #request into serial port and writes response into #response array. Method returns response length
 	 * without terminating characters.
 	 */
-	uint8_t cmd(char *response, const char *request, uint8_t requestLength);
+	void cmd(const char *request);
+	void cmd(const char *request, uint8_t cmdSize);
 };
 
 #endif /* SERIALAPI_H_ */

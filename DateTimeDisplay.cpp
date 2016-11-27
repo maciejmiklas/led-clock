@@ -16,40 +16,51 @@
  */
 #include "DateTimeDisplay.h"
 
-PROGMEM const uint8_t TIME_SEPARATOR_FONT[TIME_SEPARATOR_FRAMES][FONT8_HEIGHT] = { //
-		{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, // 1
-				{ 0x00, 0b00111100, 0b00111100, 0x00, 0x00, 0b00111100, 0b00111100, 0x00 } // 2
-		};
+char bufTime[] = { ' ', ' ', ' ', ' ', ' ', '\0' };
+char bufDate[] = { ' ', ' ', ' ', ' ', ' ', '\0' };
 
 DateTimeDisplay::DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI) :
-		canvas(canvas), serialAPI(serialAPI), hourArea(canvas, DISPLAY_TIME_WIDTH), dateArea(canvas,
-				DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeSeparatorRefreshMs(0), showingFullDate(true), timeSeparatorIdx(
-				0), timeSeparatorData(alloc2DArray8(FONT8_HEIGHT, 1)) {
-
-	refreshTime();
+		canvas(canvas), serialAPI(serialAPI), timeArea(canvas, DISPLAY_TIME_WIDTH), dateArea(canvas,
+				DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeRefreshMs(0), showingFullDate(
+		true), showingTimeDots(true) {
 }
 
 DateTimeDisplay::~DateTimeDisplay() {
-	delete2DArray8(timeSeparatorData);
 }
 
 void DateTimeDisplay::cycle() {
-	refreshTimeSeparaator();
+	refreshTime();
 	refreshDate();
 }
 
-void inline DateTimeDisplay::refreshTimeSeparaator() {
+void inline DateTimeDisplay::refreshTime() {
 	uint32_t time = ms();
-	if (time - lastTimeSeparatorRefreshMs < TIME_SEPARATOR_REFRESH_MS) {
+	if (time - lastTimeRefreshMs < TIME_REFRESH_MS) {
 		return;
 	}
-	lastTimeSeparatorRefreshMs = time;
-	if (timeSeparatorIdx == TIME_SEPARATOR_FRAMES) {
-		timeSeparatorIdx = 0;
+
+	lastTimeRefreshMs = time;
+
+	// HH
+	char* hh = serialAPI->getTime_HH();
+	bufTime[0] = hh[0];
+	bufTime[1] = hh[1];
+
+	// time separator
+	if (showingTimeDots) {
+		bufTime[2] = 5;
+	} else {
+		bufTime[2] = ' ';
 	}
-	copyTimeSeparatorData(timeSeparatorIdx);
-	canvas->paint(14, 0, FONT8_HEIGHT, FONT8_HEIGHT, timeSeparatorData);
-	timeSeparatorIdx++;
+
+	// MM
+	char* mm = serialAPI->getTime_MM();
+	bufTime[3] = mm[0];
+	bufTime[4] = mm[1];
+
+	timeArea.box(0, 0, bufTime);
+
+	showingTimeDots = !showingTimeDots;
 }
 
 void DateTimeDisplay::refreshDate() {
@@ -57,29 +68,24 @@ void DateTimeDisplay::refreshDate() {
 	if (time - lastDateSwitchMs < DATE_SWITCH_MS && lastDateSwitchMs != 0) {
 		return;
 	}
+
 	lastDateSwitchMs = time;
-	char *resp;
 	if (showingFullDate) {
-		resp = serialAPI->getDate_full();
+		char* dd = serialAPI->getDate_DD();
+		bufDate[0] = dd[0];
+		bufDate[1] = dd[1];
+		bufDate[2] = '-';
+		char* mm = serialAPI->getDate_MM();
+		bufDate[3] = mm[0];
+		bufDate[4] = mm[1];
 	} else {
-		resp = serialAPI->getDate_day();
+		char* ddd  = serialAPI->getDate_DDD();
+		bufDate[0] = ' ';
+		bufDate[1] = ddd[0];
+		bufDate[2] = ddd[1];
+		bufDate[3] = ddd[2];
+		bufDate[4] = ' ';
 	}
-	dateArea.box(0, 8, resp);
+	dateArea.box(0, 8, bufDate);
 	showingFullDate = !showingFullDate;
-}
-
-void DateTimeDisplay::refreshTime() {
-	// HH
-	char *resp = serialAPI->getTime_hour();
-	hourArea.box(0, 0, resp);
-
-	// mm
-	resp = serialAPI->getTime_minutes();
-	hourArea.box(22, 0, resp);
-}
-
-void inline DateTimeDisplay::copyTimeSeparatorData(uint8_t fontIdx) {
-	for (uint8_t row = 0; row < FONT8_HEIGHT; row++) {
-		timeSeparatorData[row][0] = pgm_read_byte(&TIME_SEPARATOR_FONT[fontIdx][row]);
-	}
 }

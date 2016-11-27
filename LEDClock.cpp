@@ -55,15 +55,15 @@ ScrollingText8x8 *sca2;
 char *text2;
 
 void setup() {
+	delay(2000);
 	dutil_setup();
 	log_setup();
+	serialAPI = new SerialAPI();
 
 	ss = setupSelectSlaveLines();
 	disp = new Display(8, 3, ss);
 	disp->setup();
 	disp->clear();
-
-	serialAPI = new SerialAPI();
 
 	dateTimeDisplay = new DateTimeDisplay(disp, serialAPI);
 	weatherDisplay = new WeatherDisplay(disp, serialAPI);

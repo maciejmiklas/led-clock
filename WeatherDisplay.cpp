@@ -81,10 +81,6 @@ PROGMEM const uint8_t WEATHER_ICON[WEATHER_ICON_SIZE][FONT8_HEIGHT] = {
 //
 		};
 
-/*
-
- */
-
 WeatherDisplay::WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI) :
 		canvas(canvas), serialAPI(serialAPI), weatherTextArea(canvas, TEXT_WIDTH_PX, TEXT_ANIMATE_DELAY_MS, 1), lastWeatherRefresh(
 				0), iconData(alloc2DArray8(ICON_HEIGHT_PX, ICON_BYTE_WIDTH)) {
@@ -99,7 +95,7 @@ WeatherDisplay::~WeatherDisplay() {
 }
 
 void WeatherDisplay::refreshIcon() {
-	copyIconData(ICON_IDX_MOON);
+	copyIconData(ICON_IDX_PARTLY_SUNNY);
 }
 
 void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
@@ -117,7 +113,7 @@ void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
 			uint8_t data = pgm_read_byte(&WEATHER_ICON[iconIdx][kitRow]);
 			iconData[dataRow][dataCol] = data;
 #if LOG
-			log(F("Weather Icon: (%d,%d) = (%d,%d) = %d"), dataRow, dataCol, iconIdx, kitRow, data);
+			log(F("YW I: (%d,%d) = (%d,%d) = %d"), dataRow, dataCol, iconIdx, kitRow, data);
 #endif
 		}
 		dataCol++;
@@ -128,35 +124,43 @@ void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
 }
 
 void WeatherDisplay::refreshWeather() {
+	cleanCharArray(buf, TEXT_BUFFER_SIZE);
+
 	uint8_t idx = 0;
 
 	for (uint8_t day = 1; day <= 3; day++) {
-
+		if (idx >= TEXT_BUFFER_MAX_SIZE) {
+			break;
+		}
 		// day
-		idx = appendText(buf, idx, TEXT_BUFFER_SIZE, serialAPI->getWeather_day(day));
+		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_DDD(day));
 		buf[idx++] = 3;
 		buf[idx++] = 4;
 		buf[idx++] = ' ';
 
 		// low temp
 		buf[idx++] = 2;
-		idx = appendText(buf, idx, TEXT_BUFFER_SIZE, serialAPI->getWeather_low(day));
+		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_low(day));
 		idx = sep(idx, 1);
 
 		// high temp
 		buf[idx++] = 1;
-		idx = appendText(buf, idx, TEXT_BUFFER_SIZE, serialAPI->getWeather_high(day));
+		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_high(day));
 		idx = sep(idx, 1);
 
 		// text
-		idx = appendText(buf, idx, TEXT_BUFFER_SIZE, serialAPI->getWeather_text(day));
+		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_text(day));
 		idx = sep(idx, 5);
 	}
+	idx = sep(idx, 5);
+	idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getESPStatus());
+	idx = sep(idx, 5);
 	buf[idx++] = '\0';
 
-#if LOG
-	log(F("Weather buf: %d -> %s"), idx, buf);
-#endif
+//#if LOG
+	log(F("YW T(%d):"), idx);
+	logs(buf, TEXT_BUFFER_SIZE);
+//#endif
 
 	weatherTextArea.scroll(0, 16, ScrollingText8x8::CONTINOUS_LOOP, buf);
 }
@@ -170,4 +174,10 @@ uint8_t inline WeatherDisplay::sep(uint8_t idx, uint8_t chars) {
 
 void WeatherDisplay::cycle() {
 	weatherTextArea.cycle();
+
+	uint32_t time = ms();
+	if (time - lastWeatherRefresh >= WEATHER_REFRESH_MS) {
+		lastWeatherRefresh = time;
+		refreshWeather();
+	}
 }

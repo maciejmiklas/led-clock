@@ -21,7 +21,7 @@
 #include "StaticText8x8.h"
 #include "SerialAPI.h"
 #include "ArdLog.h"
-#include "DipsUtil.h"
+#include "DispUtil.h"
 
 const static uint8_t TIME_SEPARATOR_FRAMES = 2;
 
@@ -31,25 +31,23 @@ public:
 	virtual ~DateTimeDisplay();
 	void cycle();
 private:
+
 	const static uint8_t DISPLAY_TIME_WIDTH = 40;
 	const static uint8_t DISPLAY_DATE_WIDTH = 40;
 	const static uint16_t DATE_SWITCH_MS = 3000;
-	const static uint16_t TIME_SEPARATOR_REFRESH_MS = 1000;
+	const static uint16_t TIME_REFRESH_MS = 1000;
 
 	Canvas * const canvas;
 	SerialAPI * const serialAPI;
-	StaticText8x8 hourArea;
+	StaticText8x8 timeArea;
 	StaticText8x8 dateArea;
 	uint32_t lastDateSwitchMs;
-	uint32_t lastTimeSeparatorRefreshMs;
+	uint32_t lastTimeRefreshMs;
 	boolean showingFullDate;
-	uint8_t timeSeparatorIdx;
-	uint8_t ** const timeSeparatorData;
+	boolean showingTimeDots;
 
-	void refreshTime();
 	void refreshDate();
-	void inline refreshTimeSeparaator();
-	void inline copyTimeSeparatorData(uint8_t fontIdx);
+	void inline refreshTime();
 };
 
 #endif /* DATETIMEDISPLAY_H_ */

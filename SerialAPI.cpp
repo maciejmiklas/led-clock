@@ -16,100 +16,145 @@
  */
 #include "SerialAPI.h"
 
-SerialAPI::SerialAPI() {
+const uint8_t CMD_SIZE = 5;
+const char CMD_GET_TIME_HH[] = { 'C', 'H', 'H', '\r', '\n', '\0' };
+const char CMD_GET_TIME_MM[] = { 'C', 'M', 'I', '\r', '\n', '\0' };
+const char CMD_GET_DATE_DDD[] = { 'C', 'D', '3', '\r', '\n', '\0' };
+const char CMD_GET_DATE_DD[] = { 'C', 'D', 'D', '\r', '\n', '\0' };
+const char CMD_GET_DATE_MM[] = { 'C', 'M', 'M', '\r', '\n', '\0' };
+const char CMD_GET_ESP_STATUS[] = { 'G', 'S', 'S', '\r', '\n', '\0' };
 
+const uint8_t CMD_GET_WEATHER_DAY_IDX = 2;
+
+const uint8_t CMD_GET_WEATHER_DAY_SIZE = 9;
+char CMD_GET_WEATHER_DAY[] = { 'Y', 'F', '1', ' ', 'd', 'a', 'y', '\r', '\n', '\0' };
+
+const uint8_t CMD_GET_WEATHER_TEXT_SIZE = 10;
+char CMD_GET_WEATHER_TEXT[] = { 'Y', 'F', '1', ' ', 't', 'e', 'x', 't', '\r', '\n', '\0' };
+
+const uint8_t CMD_GET_WEATHER_LOW_SIZE = 9;
+char CMD_GET_WEATHER_LOW[] = { 'Y', 'F', '1', ' ', 'l', 'o', 'w', '\r', '\n', '\0' };
+
+const uint8_t CMD_GET_WEATHER_HIGH_SIZE = 10;
+char CMD_GET_WEATHER_HIGH[] = { 'Y', 'F', '1', ' ', 'h', 'i', 'g', 'h', '\r', '\n', '\0' };
+
+const uint8_t CMD_GET_WEATHER_CODE_DAY_IDX = 3;
+const uint8_t CMD_GET_WEATHER_CODE_SIZE = 7;
+char CMD_GET_WEATHER_CODE[] = { 'Y', 'W', 'C', ' ', '1', '\r', '\n', '\0' };
+
+SerialAPI::SerialAPI() :
+		lastReadBytes(0) {
+	serial().begin(SERIAL_BAUD);
+	cleanCharArray(sbuf, SBUF_SIZE);
+	getESPStatus();
 }
 
 SerialAPI::~SerialAPI() {
 }
 
-uint8_t SerialAPI::cmd(char *response, const char *request, uint8_t requestLength) {
-	return 0;
-}
-
-char* SerialAPI::getTime_hour() {
-	sbuf[0] = '1';
-	sbuf[1] = '3';
-	sbuf[2] = '\0';
-	return sbuf;
-}
-
-char* SerialAPI::getTime_minutes() {
-	sbuf[0] = '4';
-	sbuf[1] = '5';
-	sbuf[2] = '\0';
-	return sbuf;
-}
-
-char* SerialAPI::getDate_day() {
-	sbuf[0] = ' ';
-	sbuf[1] = 'M';
-	sbuf[2] = 'o';
-	sbuf[3] = 'n';
-	sbuf[4] = ' ';
-	sbuf[5] = '\0';
-	return sbuf;
-}
-
-char* SerialAPI::getDate_full() {
-	sbuf[0] = '2';
-	sbuf[1] = '3';
-	sbuf[2] = '-';
-	sbuf[3] = '1';
-	sbuf[4] = '0';
-	sbuf[5] = '\0';
-	return sbuf;
-}
-
-char* SerialAPI::getWeather_day(uint8_t day) {
-	if (day == 1) {
-		sbuf[0] = 'M';
-		sbuf[1] = 'o';
-		sbuf[2] = 'n';
-		sbuf[3] = '\0';
-	} else if (day == 2) {
-		sbuf[0] = 'T';
-		sbuf[1] = 'h';
-		sbuf[2] = 'u';
-		sbuf[3] = '\0';
-	} else if (day == 3) {
-		sbuf[0] = 'W';
-		sbuf[1] = 'e';
-		sbuf[2] = 'd';
-		sbuf[3] = '\0';
+inline void SerialAPI::readGarbage() {
+	if (serial().available() <= 0) {
+		return;
 	}
+	uint8_t idx = 0;
+	cleanCharArray(sbuf, SBUF_SIZE);
+
+	while (serial().available() > 0) {
+		int read = serial().read();
+		if (idx < SBUF_SIZE) {
+			sbuf[idx++] = read;
+		} else {
+			//#if LOG
+			logc(read);
+			//#endif
+		}
+	}
+	//#if LOG
+	if (idx > 0) {
+		sbuf[idx] = '\0';
+		log(F("SR G(%u):"), idx);
+		logs(sbuf, SBUF_SIZE);
+	}
+
+}
+
+void SerialAPI::cmd(const char *request) {
+	cmd(request, CMD_SIZE);
+}
+
+void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
+	readGarbage();
+	if (lastReadBytes > 0) {
+		cleanCharArray(sbuf, lastReadBytes);
+	}
+	serial().write(request, cmdSize);
+	serial().flush();
+	lastReadBytes = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
+
+//#if LOG
+	log(F("SR CMD:"));
+	logs(F("-> "), request, cmdSize);
+	logs(F("<- "), sbuf, SBUF_SIZE);
+//#endif
+}
+
+char* SerialAPI::getESPStatus() {
+	cmd(CMD_GET_ESP_STATUS);
+	return sbuf;
+}
+
+char* SerialAPI::getTime_HH() {
+	cmd(CMD_GET_TIME_HH);
+	return sbuf;
+}
+
+char* SerialAPI::getTime_MM() {
+	cmd(CMD_GET_TIME_MM);
+	return sbuf;
+}
+
+char* SerialAPI::getDate_DDD() {
+	cmd(CMD_GET_DATE_DDD);
+	return sbuf;
+}
+
+char* SerialAPI::getDate_DD() {
+	cmd(CMD_GET_DATE_DD);
+	return sbuf;
+}
+
+char* SerialAPI::getDate_MM() {
+	cmd(CMD_GET_DATE_MM);
+	return sbuf;
+}
+
+uint8_t SerialAPI::getWeather_code(uint8_t day) {
+	CMD_GET_WEATHER_CODE[CMD_GET_WEATHER_CODE_DAY_IDX] = '0' + day;
+	cmd(CMD_GET_WEATHER_CODE, CMD_GET_WEATHER_CODE_SIZE);
+	return sbuf[0];
+}
+
+char* SerialAPI::getWeather_DDD(uint8_t day) {
+	CMD_GET_WEATHER_DAY[CMD_GET_WEATHER_DAY_IDX] = '0' + day;
+	cmd(CMD_GET_WEATHER_DAY, CMD_GET_WEATHER_DAY_SIZE);
 	return sbuf;
 }
 
 char* SerialAPI::getWeather_text(uint8_t day) {
-	sbuf[0] = 'P';
-	sbuf[1] = 'a';
-	sbuf[2] = 'r';
-	sbuf[3] = 't';
-	sbuf[4] = 'l';
-	sbuf[5] = 'y';
-	sbuf[6] = ' ';
-	sbuf[7] = 'C';
-	sbuf[8] = 'l';
-	sbuf[9] = 'o';
-	sbuf[10] = 'u';
-	sbuf[11] = 'd';
-	sbuf[12] = 'y';
-	sbuf[13] = '\0';
+	CMD_GET_WEATHER_TEXT[CMD_GET_WEATHER_DAY_IDX] = '0' + day;
+	cmd(CMD_GET_WEATHER_TEXT, CMD_GET_WEATHER_TEXT_SIZE);
 	return sbuf;
 }
 
 char* SerialAPI::getWeather_low(uint8_t day) {
-	sbuf[0] = '1';
-	sbuf[1] = '0';
-	sbuf[2] = '\0';
+	CMD_GET_WEATHER_LOW[CMD_GET_WEATHER_DAY_IDX] = '0' + day;
+	cmd(CMD_GET_WEATHER_LOW, CMD_GET_WEATHER_LOW_SIZE);
 	return sbuf;
 }
 
 char* SerialAPI::getWeather_high(uint8_t day) {
-	sbuf[0] = '2';
-	sbuf[1] = '1';
-	sbuf[2] = '\0';
+	CMD_GET_WEATHER_HIGH[CMD_GET_WEATHER_DAY_IDX] = '0' + day;
+	cmd(CMD_GET_WEATHER_HIGH, CMD_GET_WEATHER_HIGH_SIZE);
 	return sbuf;
 }
 
