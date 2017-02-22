@@ -141,6 +141,9 @@ void WeatherDisplay::refreshWeather() {
 		// low temp
 		buf[idx++] = 2;
 		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_low(day));
+		if (idx >= TEXT_BUFFER_MAX_SIZE) {
+			break;
+		}
 		idx = sep(idx, 1);
 
 		// high temp
@@ -150,6 +153,9 @@ void WeatherDisplay::refreshWeather() {
 
 		// text
 		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_text(day));
+		if (idx >= TEXT_BUFFER_MAX_SIZE) {
+			break;
+		}
 		idx = sep(idx, 5);
 	}
 	idx = sep(idx, 5);
@@ -157,10 +163,10 @@ void WeatherDisplay::refreshWeather() {
 	idx = sep(idx, 5);
 	buf[idx++] = '\0';
 
-//#if LOG
+#if LOG
 	log(F("YW T(%d):"), idx);
 	logs(buf, TEXT_BUFFER_SIZE);
-//#endif
+#endif
 
 	weatherTextArea.scroll(0, 16, ScrollingText8x8::CONTINOUS_LOOP, buf);
 }

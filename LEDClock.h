@@ -9,18 +9,4 @@
 #include "WeatherDisplay.h"
 #include "SerialAPI.h"
 
-//end of add your includes here
-#ifdef __cplusplus
-extern "C" {
-#endif
-void loop();
-void setup();
-#ifdef __cplusplus
-} // extern "C"
-#endif
-
-//add your function definitions for the project LEDClock here
-
-
-
 #endif /* LEDCLOCK_H_ */

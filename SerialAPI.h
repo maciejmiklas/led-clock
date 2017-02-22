@@ -73,7 +73,6 @@ private:
 	const static uint8_t SBUF_SIZE = 64;
 	char sbuf[SBUF_SIZE];
 	inline HardwareSerial& serial();
-	uint8_t lastReadBytes;
 
 	/**
 	 * Sends given #request into serial port and writes response into #response array. Method returns response length

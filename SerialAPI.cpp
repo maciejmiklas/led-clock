@@ -42,8 +42,7 @@ const uint8_t CMD_GET_WEATHER_CODE_DAY_IDX = 3;
 const uint8_t CMD_GET_WEATHER_CODE_SIZE = 7;
 char CMD_GET_WEATHER_CODE[] = { 'Y', 'W', 'C', ' ', '1', '\r', '\n', '\0' };
 
-SerialAPI::SerialAPI() :
-		lastReadBytes(0) {
+SerialAPI::SerialAPI() {
 	serial().begin(SERIAL_BAUD);
 	cleanCharArray(sbuf, SBUF_SIZE);
 	getESPStatus();
@@ -57,24 +56,20 @@ inline void SerialAPI::readGarbage() {
 		return;
 	}
 	uint8_t idx = 0;
-	cleanCharArray(sbuf, SBUF_SIZE);
 
 	while (serial().available() > 0) {
 		int read = serial().read();
 		if (idx < SBUF_SIZE) {
 			sbuf[idx++] = read;
-		} else {
-			//#if LOG
-			logc(read);
-			//#endif
 		}
 	}
-	//#if LOG
+#if LOG
 	if (idx > 0) {
 		sbuf[idx] = '\0';
 		log(F("SR G(%u):"), idx);
 		logs(sbuf, SBUF_SIZE);
 	}
+#endif
 
 }
 
@@ -84,17 +79,13 @@ void SerialAPI::cmd(const char *request) {
 
 void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 	readGarbage();
-	if (lastReadBytes > 0) {
-		cleanCharArray(sbuf, lastReadBytes);
-	}
 	serial().write(request, cmdSize);
 	serial().flush();
-	lastReadBytes = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
-
+	uint8_t readSize = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
+	sbuf[readSize] = '\0';
 //#if LOG
-	log(F("SR CMD:"));
-	logs(F("-> "), request, cmdSize);
-	logs(F("<- "), sbuf, SBUF_SIZE);
+	logs(F("SR-> "), request, cmdSize);
+	logs(F("SR<- "), sbuf, SBUF_SIZE);
 //#endif
 }
 

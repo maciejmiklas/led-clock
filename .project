@@ -6,7 +6,7 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>it.baeyens.arduino.core.inoToCpp</name>
+			<name>io.sloeber.core.inoToCpp</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -28,33 +28,33 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
-		<nature>it.baeyens.arduinonature</nature>
+		<nature>io.sloeber.arduinonature</nature>
 	</natures>
 	<linkedResources>
 		<link>
 			<name>ArdLog</name>
 			<type>2</type>
-			<location>/home/mmiklas/Development/Arduino/prj/sloeber/ArdLog</location>
+			<locationURI>WORKSPACE_LOC/ArdLog</locationURI>
 		</link>
 		<link>
 			<name>LEDDisplay</name>
 			<type>2</type>
-			<location>/home/mmiklas/Development/Arduino/prj/sloeber/LEDDisplay</location>
+			<locationURI>WORKSPACE_LOC/LEDDisplay</locationURI>
 		</link>
 		<link>
 			<name>core/core</name>
 			<type>2</type>
-			<location>/home/mmiklas/Development/Arduino/opt/sloeber-v3.1/arduinoPlugin/packages/arduino/hardware/avr/1.6.17/cores/arduino</location>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.17/cores/arduino</locationURI>
 		</link>
 		<link>
 			<name>core/variant</name>
 			<type>2</type>
-			<location>/home/mmiklas/Development/Arduino/opt/sloeber-v3.1/arduinoPlugin/packages/arduino/hardware/avr/1.6.17/variants/mega</location>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.17/variants/mega</locationURI>
 		</link>
 		<link>
 			<name>libraries/SPI</name>
 			<type>2</type>
-			<location>/home/mmiklas/Development/Arduino/opt/sloeber-v3.1/arduinoPlugin/packages/arduino/hardware/avr/1.6.17/libraries/SPI</location>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.17/libraries/SPI</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
