@@ -133,27 +133,27 @@ void WeatherDisplay::refreshWeather() {
 			break;
 		}
 		// day
-		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_DDD(day));
+		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_DDD(day));
 		buf[idx++] = 3;
 		buf[idx++] = 4;
 		buf[idx++] = ' ';
 
 		// low temp
 		buf[idx++] = 2;
-		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_low(day));
+		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_low(day));
 		idx = sep(idx, 1);
 
 		// high temp
 		buf[idx++] = 1;
-		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_high(day));
+		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_high(day));
 		idx = sep(idx, 1);
 
 		// text
-		idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_text(day));
+		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_text(day));
 		idx = sep(idx, 5);
 	}
 	idx = sep(idx, 5);
-	idx = appendLine(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getESPStatus());
+	idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getESPStatus());
 	idx = sep(idx, 5);
 	buf[idx++] = '\0';
 
