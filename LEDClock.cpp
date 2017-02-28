@@ -13,8 +13,9 @@ static ss_t **ss;
  * 37, 35, 33, 31, 29, 27, 25, 23
  */
 static ss_t** setupSelectSlaveLines() {
-	ss_t **ss = new ss_t*[3];
-	for (int i = 0; i < 8; i++) {
+	uint8_t rows = 3;
+	ss_t **ss = new ss_t*[rows];
+	for (int i = 0; i < rows; i++) {
 		ss[i] = new ss_t[8];
 	}
 
