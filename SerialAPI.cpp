@@ -38,7 +38,7 @@ char CMD_GET_WEATHER_LOW[] = { 'Y', 'F', '1', ' ', 'l', 'o', 'w', '\r', '\n', '\
 const uint8_t CMD_GET_WEATHER_HIGH_SIZE = 10;
 char CMD_GET_WEATHER_HIGH[] = { 'Y', 'F', '1', ' ', 'h', 'i', 'g', 'h', '\r', '\n', '\0' };
 
-const uint8_t CMD_GET_WEATHER_CODE_DAY_IDX = 3;
+const uint8_t CMD_GET_WEATHER_CODE_DAY_IDX = 4;
 const uint8_t CMD_GET_WEATHER_CODE_SIZE = 7;
 char CMD_GET_WEATHER_CODE[] = { 'Y', 'W', 'C', ' ', '1', '\r', '\n', '\0' };
 
@@ -83,10 +83,10 @@ void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 	serial().flush();
 	uint8_t readSize = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
 	sbuf[readSize] = '\0';
-//#if LOG
+#if LOG
 	logs(F("SR-> "), request, cmdSize);
 	logs(F("SR<- "), sbuf, SBUF_SIZE);
-//#endif
+#endif
 }
 
 char* SerialAPI::getESPStatus() {
@@ -122,7 +122,17 @@ char* SerialAPI::getDate_MM() {
 uint8_t SerialAPI::getWeather_code(uint8_t day) {
 	CMD_GET_WEATHER_CODE[CMD_GET_WEATHER_CODE_DAY_IDX] = '0' + day;
 	cmd(CMD_GET_WEATHER_CODE, CMD_GET_WEATHER_CODE_SIZE);
-	return sbuf[0];
+	uint8_t val = sbuf[0];
+
+	// we expect here ACSI character where numbers start with 48.
+	if (val >= 48) {
+		val -= 48;
+	}
+
+#if LOG
+			log(F("WCD %d = %d -> %d"), day, sbuf[0], val);
+#endif
+	return val;
 }
 
 char* SerialAPI::getWeather_DDD(uint8_t day) {

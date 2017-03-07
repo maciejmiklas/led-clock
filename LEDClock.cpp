@@ -3,7 +3,9 @@
 Display *disp;
 DateTimeDisplay *dateTimeDisplay;
 WeatherDisplay *weatherDisplay;
-SerialAPI * serialAPI;
+SerialAPI *serialAPI;
+Brightness *brightness;
+
 static ss_t **ss;
 
 /**
@@ -68,6 +70,7 @@ void setup() {
 
 	dateTimeDisplay = new DateTimeDisplay(disp, serialAPI);
 	weatherDisplay = new WeatherDisplay(disp, serialAPI);
+	brightness = new Brightness(disp);
 }
 
 void loop() {
@@ -75,6 +78,7 @@ void loop() {
 	log_cycle();
 	dateTimeDisplay->cycle();
 	weatherDisplay->cycle();
+	brightness->cycle();
 	disp->flush();
 }
 

@@ -48,7 +48,7 @@ void inline DateTimeDisplay::refreshTime() {
 
 	// time separator
 	if (showingTimeDots) {
-		bufTime[2] = 5;
+		bufTime[2] = ':';
 	} else {
 		bufTime[2] = ' ';
 	}

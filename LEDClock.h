@@ -8,5 +8,6 @@
 #include "DateTimeDisplay.h"
 #include "WeatherDisplay.h"
 #include "SerialAPI.h"
+#include "Brightness.h"
 
 #endif /* LEDCLOCK_H_ */
