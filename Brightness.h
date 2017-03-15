@@ -27,7 +27,7 @@ public:
 	virtual ~Brightness();
 	void cycle();
 private:
-	const static uint16_t REFRESH_MS = 500;
+	const static uint16_t REFRESH_MS = 100;
 	const static uint8_t ANALOG_PIN = A0;
 	uint32_t lastRefreshMs;
 	Display* const display;

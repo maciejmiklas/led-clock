@@ -30,12 +30,19 @@ void Brightness::cycle() {
 	}
 	lastRefreshMs = time;
 	uint16_t aval = analogRead(ANALOG_PIN);
-	uint8_t brightness = map16(aval, 70, 900, 15, 1);
-	if (brightness > 15) {
+
+	uint8_t brightness = 0;
+	if (aval <= 400) {
 		brightness = 15;
+
+	} else if (aval <= 600) {
+		brightness = 10;
+
+	} else if (aval <= 700) {
+		brightness = 5;
 	}
 
-	//log(F("BR: %d -> %d"), aval, brightness);
+	log(F("BR: %d -> %d"), aval, brightness);
 	display->brightness(brightness);
 }
 
