@@ -41,8 +41,6 @@ void Brightness::cycle() {
 	} else if (aval <= 700) {
 		brightness = 5;
 	}
-
-	log(F("BR: %d -> %d"), aval, brightness);
 	display->brightness(brightness);
 }
 

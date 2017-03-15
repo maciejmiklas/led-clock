@@ -133,8 +133,6 @@ void WeatherDisplay::refreshIcon() {
 	uint8_t code = serialAPI->getWeather_code(1);
 	uint8_t iconOffset;
 
-	log(F("ICON: %d"), code);
-
 	switch (code) {
 	case 0:
 		iconOffset = ICON_IDX_MIX_SUN_RAIN;
