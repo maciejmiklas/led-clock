@@ -1,6 +1,6 @@
 # LEDClock
 This is a weather station with forecast for three days, it also includes clock with local time and date.
-[![](https://i.ytimg.com/vi/xcpKJU7HzQs/0.jpg)](https://www.youtube.com/embed/xcpKJU7HzQs?feature=player_embedded)
+[![](/doc/img/youtube.jpg)](https://www.youtube.com/embed/xcpKJU7HzQs?feature=player_embedded)
 
 The whole project is based on Arduino, NodeMCU provides access to the internet over WiFi. The display is build from single LEDs. Since they can be really bright it adopts illumination based on light conditions.
 
@@ -15,11 +15,9 @@ Well that worked out pretty well when it comes to those skills, but I would reco
 
 <img src="/doc/img/cables.jpg" width="640px"/>
 
-So we have hardware part for our display: 24 led modules with drivers. Now it's time to light them up! I've decided to go for Arduino Mega, because it has two serial ports, so it's easier to debug things. You could also use Uno, it this case you would have to daisy chain MAX chips and change addressing is software. I've used separate line for each Max chip, but Uno just does not have enough digital output pins.
+So we have hardware part for our display: 24 led modules with drivers. Now it's time to light them up! I've decided to go for Arduino Mega, because it has two serial ports, so it's easier to debug things. You could also use Uno, it this case you would have to daisy chain MAX chips and change addressing in software. I've used separate line for each Max chip, but Uno just does not have enough digital output pins.
 
 I was looking for API that will join all led modules into one canvas, so that you can print spites on it without bothering with transitions between LED modules. I did not find anything that would make me happy so I've decided to implement one by myself.  It provides not only simple canvas, but fonts and few animations. Basically everything that will be needed to display time and weather.
-
-So ... we have a display and API to control it. Now we need to get date and weather. Arduino does not support internet connectivity and it definitely does not have enough resources to process incoming data. So I've decided to use NodeMCU. With few Lua scripts I was able to implement simple API that is accessible over serial port. Arduino connects over it with NodeMCU, obtains time, date, weather and displays it.
 
 <img src="/doc/img/ledclockarch.png" width="640px"/>
 
@@ -51,7 +49,10 @@ In order to provide weather and time to Arduino you will have to clone this proj
 
 3. Edit yahooWeather.lua and provide city and country that you would like to have weather for.
 
-4. Create new file called: credentials.lua and specify login data for WiFi connection, it's just one line, for example: *cred = {ssid = 'openwifi', password = '123456789'}*
+4. Create new file called: credentials.lua and specify login data for WiFi connection, it's just one line, for example: 
+```lua
+cred = {ssid = 'openwifi', password = '123456789'}
+```
 
 5. Upload all Lua scirpts from main project's folder into NodeMCU:
 * credentials.lua
@@ -65,7 +66,7 @@ In order to provide weather and time to Arduino you will have to clone this proj
 * serialAPIYahooWeather.lua
 * wlan.lua
 * yahooWeather.lua
-6. Now for the final touch we need the init-file that will be executed right after NodeMCU boots up. In our case we are using the only Serial port in order to expose weather and clock API. This also means, that once our API is registered, it's impossible to execute standard NodeMCU commands, like file upload. For this reason init-script has two seconds delay, during this time you can still upload files, or just remove current init.lua file.  Our init-files are there: NodeMCUUtils/init/serialInit
+6. Now for the final touch we need the init-file that will be executed right after NodeMCU boots up. In our case we are using the only Serial port in order to expose weather and clock API. This also means, that once our API is registered, it's impossible to execute standard NodeMCU commands, like file upload. For this reason init-script has two seconds delay, during this time you can still upload files, or just remove current init.lua file.  Our init-files are there: *NodeMCUUtils/init/serialInit*
 init.lua
 serialInit.lua
 
