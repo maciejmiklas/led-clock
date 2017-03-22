@@ -1,6 +1,6 @@
 # LEDClock
 This is a weather station with forecast for three days, it also includes clock with local time and date.
-[![](/doc/img/youtube.jpg)](https://www.youtube.com/embed/xcpKJU7HzQs?feature=player_embedded)
+[![Click me to play video :)](/doc/img/youtube.jpg)](https://www.youtube.com/watch/xcpKJU7HzQs)
 
 The whole project is based on Arduino, NodeMCU provides access to the internet over WiFi. The display is build from single LEDs. Since they can be really bright it adopts illumination based on light conditions.
 
