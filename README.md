@@ -7,7 +7,9 @@ The whole project is based on Arduino, NodeMCU provides access to the Internet o
 Let's start from the beginning ;)
 
 I've found those 8x8 LED modules:
+
 <img src="/doc/img/led8x8.jpg" width="320px"/>
+
 so I've decided to combine few to build a display. In my case there are 3 lines, each consist of 8 modules, 24 it total, this give us 1532 single LEDs! 
 
 To drive single module I've chosen MAX72xx, I also wanted to improve my soldering skills, so I've decided to go for 24 PIN DIP chips and solder them to prototype boards:
