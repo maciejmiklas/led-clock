@@ -1,7 +1,7 @@
 [![Click me to play video :)](/doc/img/youtube.jpg)](https://www.youtube.com/watch/xcpKJU7HzQs)
 This is a weather station with forecast for three days, it also includes clock with local time and date.
 
-The whole project is based on Arduino, NodeMCU provides access to the Internet over WiFi. The display is build from single LEDs. Since they can be really bright it adopts illumination based on light conditions.
+The whole project is based on Arduino, NodeMCU provides access to the Internet over WiFi. The display is built from single LEDs. Since they can be really bright it adopts illumination based on light conditions.
 <img src="/doc/img/ledclockarch.png" width="640px"/>
 
 Let's start from the beginning ;)
@@ -10,7 +10,7 @@ I've found those 8x8 LED modules:
 
 <img src="/doc/img/led8x8.jpg" width="320px"/>
 
-so I've decided to combine few to build a display. In my case there are 3 lines, each consist of 8 modules, 24 it total, this give us 1532 single LEDs! 
+so I've decided to combine few to build a display. In my case there are 3 lines, each consists of 8 modules, 24 it total, this give us 1532 single LEDs! 
 
 To drive single module I've chosen MAX72xx, I also wanted to improve my soldering skills, so I've decided to go for 24 PIN DIP chips and solder them to prototype boards:
 
@@ -18,7 +18,7 @@ To drive single module I've chosen MAX72xx, I also wanted to improve my solderin
 
 Well that worked out pretty well when it comes to those skills, but I would recommend to use LED modules combined with MAX Chip, this will save you at least few hours, not mentioning time spent afterwards when single cable gets loose ;) Such combo-module has only 3 wires instead of 16.
 
-So we have hardware part for our display: 24 led modules with drivers. Now it's time to light them up! I've decided to go for Arduino Mega, because it has two serial ports, so it's easier to debug things (one port will be used for communication with EPS8266). You could also use Uno, it this case you would have to daisy chain MAX chips and change addressing in software. I've used separate line for each Max chip, but Uno just does not have enough digital output pins.
+So we have hardware part for our display: 24 led modules with drivers. Now it's time to light them up! I've decided to go for Arduino Mega, because it has two serial ports, so it's easier to debug things (one port will be used for communication with EPS8266). You could also use Uno, in this case you would have to daisy chain MAX chips and change addressing in software. I've used separate line for each Max chip, but Uno just does not have enough digital output pins.
 
 I was looking for API that will join all led modules into one canvas, so that you can print spites on it without bothering with transitions between LED modules. I did not find anything that would make me happy so I've decided to implement  [one by myself](https://github.com/maciejmiklas/LEDDisplay).  It provides not only simple canvas, but fonts and few animations. Basically everything that will be needed to display time and weather.
 
@@ -32,6 +32,7 @@ Getting the weather was a bit tricky, because I had to find API that will return
 First you have to build the display as described in this project: https://github.com/maciejmiklas/LEDDisplay . You can use the same pin numbers on Mega, so that you will not have to alter software.
 
 After the display is ready, you should connect ESP8266 and photo-resistor. Schematic below contains all hardware elements together:
+
 <img src="/doc/img/LED_Clock_schem.png" width="640px"/>
 
 # Software for Arduino Mega
@@ -42,7 +43,7 @@ In [this blog post](http://maciej-miklas.blogspot.com/2017/03/weather-station-ba
 # Software for NodeMCU/ESP8266
 In order to provide weather and time to Arduino you will have to clone this project: https://github.com/maciejmiklas/NodeMCUUtils , modify few scripts and upload those afterwards into NodeMCU. Here are the steps:
 
-1. Compile firmware for NodeMCU so that is has all required modules. [Here](http://maciej-miklas.blogspot.com/2016/08/installing-nodemcu-v15-on-eps8266-esp.html) you will find instructions on it, and those are required modules: file, gpio, net, node, tmr, uart, wifi and cjson.
+1. Compile firmware for NodeMCU so that it has all required modules. [Here](http://maciej-miklas.blogspot.com/2016/08/installing-nodemcu-v15-on-eps8266-esp.html) you will find instructions on it, and those are required modules: file, gpio, net, node, tmr, uart, wifi and cjson.
 
 2. Clone project containing Lua scripts: https://github.com/maciejmiklas/NodeMCUUtils
 
@@ -67,7 +68,7 @@ cred = {ssid = 'openwifi', password = '123456789'}
 * serialAPIYahooWeather.lua
 * wlan.lua
 * yahooWeather.lua
-6. Now for the final touch we need the init-file that will be executed right after NodeMCU boots up. In our case we are using the only Serial port in order to expose weather and clock API. This also means, that once our API is registered, it's impossible to execute standard NodeMCU commands, like file upload. For this reason init-script has two seconds delay, during this time you can still upload files, or just remove current *init.lua* file. 
+6. Now for the final touch we need the init-file that will be executed right after NodeMCU boots up. In our case we are using the only Serial Port in order to expose weather and clock API. This also means, that once our API is registered, it's impossible to execute standard NodeMCU commands, like file upload. For this reason init-script has two seconds delay, during this time you can still upload files, or just remove current *init.lua* file. 
 
 Init-files are there: *NodeMCUUtils/init/serialInit*
 * init.lua
