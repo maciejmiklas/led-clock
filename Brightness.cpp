@@ -17,7 +17,7 @@
 #include "Brightness.h"
 
 Brightness::Brightness(Display * display) :
-		lastRefreshMs(0), display(display) {
+		lastRefreshMs(0), lastAval(0), display(display) {
 }
 
 Brightness::~Brightness() {
@@ -31,6 +31,11 @@ void Brightness::cycle() {
 	lastRefreshMs = time;
 	uint16_t aval = analogRead(ANALOG_PIN);
 
+	if(abs(aval - lastAval) < MIN_CHANGE){
+		return;
+	}
+	lastAval = aval;
+
 	uint8_t brightness = 0;
 	if (aval <= 400) {
 		brightness = 15;
@@ -43,4 +48,3 @@ void Brightness::cycle() {
 	}
 	display->brightness(brightness);
 }
-

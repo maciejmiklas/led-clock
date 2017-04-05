@@ -29,7 +29,9 @@ public:
 private:
 	const static uint16_t REFRESH_MS = 100;
 	const static uint8_t ANALOG_PIN = A0;
+	const static uint8_t MIN_CHANGE = 50;
 	uint32_t lastRefreshMs;
+	uint16_t lastAval;
 	Display* const display;
 
 };
