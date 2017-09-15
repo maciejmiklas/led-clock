@@ -24,6 +24,9 @@ const char CMD_GET_DATE_DD[] = { 'C', 'D', 'D', '\r', '\n', '\0' };
 const char CMD_GET_DATE_MM[] = { 'C', 'M', 'M', '\r', '\n', '\0' };
 const char CMD_GET_ESP_STATUS[] = { 'G', 'S', 'S', '\r', '\n', '\0' };
 
+const char CMD_GET_CUR_TEMP[] = { 'Y', 'C', 'W', ' ', 't', 'e', 'm', 'p', '\r', '\n', '\0' };
+const uint8_t CMD_GET_CUR_TEMP_SIZE = 10;
+
 const uint8_t CMD_GET_WEATHER_DAY_IDX = 2;
 
 const uint8_t CMD_GET_WEATHER_DAY_SIZE = 9;
@@ -44,6 +47,7 @@ char CMD_GET_WEATHER_CODE[] = { 'Y', 'W', 'C', ' ', '1', '\r', '\n', '\0' };
 
 SerialAPI::SerialAPI() {
 	serial().begin(SERIAL_BAUD);
+	serial().setTimeout(SERIAL_TIMOUT_MS);
 	cleanCharArray(sbuf, SBUF_SIZE);
 	getESPStatus();
 }
@@ -52,18 +56,15 @@ SerialAPI::~SerialAPI() {
 }
 
 inline void SerialAPI::readGarbage() {
-	if (serial().available() <= 0) {
-		return;
-	}
+#if LOG
 	uint8_t idx = 0;
-
 	while (serial().available() > 0) {
 		int read = serial().read();
 		if (idx < SBUF_SIZE) {
 			sbuf[idx++] = read;
 		}
 	}
-#if LOG
+
 	if (idx > 0) {
 		sbuf[idx] = '\0';
 		log(F("SR G(%u):"), idx);
@@ -71,6 +72,9 @@ inline void SerialAPI::readGarbage() {
 	}
 #endif
 
+	while (serial().available() > 0) {
+		serial().read();
+	}
 }
 
 void SerialAPI::cmd(const char *request) {
@@ -119,6 +123,11 @@ char* SerialAPI::getDate_MM() {
 	return sbuf;
 }
 
+char* SerialAPI::getCurrentWeather_temp() {
+	cmd(CMD_GET_CUR_TEMP, CMD_GET_CUR_TEMP_SIZE);
+	return sbuf;
+}
+
 uint8_t SerialAPI::getWeather_code(uint8_t day) {
 	CMD_GET_WEATHER_CODE[CMD_GET_WEATHER_CODE_DAY_IDX] = '0' + day;
 	cmd(CMD_GET_WEATHER_CODE, CMD_GET_WEATHER_CODE_SIZE);
@@ -130,7 +139,7 @@ uint8_t SerialAPI::getWeather_code(uint8_t day) {
 	}
 
 #if LOG
-			log(F("WCD %d = %d -> %d"), day, sbuf[0], val);
+	log(F("WCD %d = %d -> %d"), day, sbuf[0], val);
 #endif
 	return val;
 }

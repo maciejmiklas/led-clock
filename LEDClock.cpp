@@ -58,9 +58,12 @@ ScrollingText8x8 *sca2;
 char *text2;
 
 void setup() {
-	delay(2000);
+	delay(3000);
 	dutil_setup();
+
+#if ENABLE_LOGGER
 	log_setup();
+#endif
 	serialAPI = new SerialAPI();
 
 	ss = setupSelectSlaveLines();
@@ -75,7 +78,9 @@ void setup() {
 
 void loop() {
 	dutil_cycle();
+#if ENABLE_LOGGER
 	log_cycle();
+#endif
 	dateTimeDisplay->cycle();
 	weatherDisplay->cycle();
 	brightness->cycle();

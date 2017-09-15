@@ -32,6 +32,7 @@ public:
 	void cycle();
 private:
 
+	const static uint8_t DISPLAY_DATE_CHARS = 5;
 	const static uint8_t DISPLAY_TIME_WIDTH = 40;
 	const static uint8_t DISPLAY_DATE_WIDTH = 40;
 	const static uint16_t DATE_SWITCH_MS = 3000;
@@ -43,7 +44,7 @@ private:
 	StaticText8x8 dateArea;
 	uint32_t lastDateSwitchMs;
 	uint32_t lastTimeRefreshMs;
-	boolean showingFullDate;
+	uint8_t switchDispPos;
 	boolean showingTimeDots;
 
 	void refreshDate();

@@ -21,8 +21,7 @@ char bufDate[] = { ' ', ' ', ' ', ' ', ' ', '\0' };
 
 DateTimeDisplay::DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI) :
 		canvas(canvas), serialAPI(serialAPI), timeArea(canvas, DISPLAY_TIME_WIDTH), dateArea(canvas,
-				DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeRefreshMs(0), showingFullDate(
-		true), showingTimeDots(true) {
+				DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeRefreshMs(0), switchDispPos(0), showingTimeDots(true) {
 }
 
 DateTimeDisplay::~DateTimeDisplay() {
@@ -70,7 +69,8 @@ void DateTimeDisplay::refreshDate() {
 	}
 
 	lastDateSwitchMs = time;
-	if (showingFullDate) {
+	switch (switchDispPos) {
+	case 0: {
 		char* dd = serialAPI->getDate_DD();
 		bufDate[0] = dd[0];
 		bufDate[1] = dd[1];
@@ -78,14 +78,28 @@ void DateTimeDisplay::refreshDate() {
 		char* mm = serialAPI->getDate_MM();
 		bufDate[3] = mm[0];
 		bufDate[4] = mm[1];
-	} else {
-		char* ddd  = serialAPI->getDate_DDD();
+	}
+		break;
+
+	case 1: {
+		char* ddd = serialAPI->getDate_DDD();
 		bufDate[0] = ' ';
 		bufDate[1] = ddd[0];
 		bufDate[2] = ddd[1];
 		bufDate[3] = ddd[2];
 		bufDate[4] = ' ';
 	}
+		break;
+
+	case 2:
+	default: {
+		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
+		append(bufDate, 1, DISPLAY_DATE_CHARS, serialAPI->getCurrentWeather_temp());
+	}
+		switchDispPos = -1;
+		break;
+	}
+	switchDispPos++;
+
 	dateArea.box(0, 8, bufDate);
-	showingFullDate = !showingFullDate;
 }

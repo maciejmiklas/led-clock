@@ -46,7 +46,7 @@ private:
 	const static uint8_t ICON_IDX_CLOUDY = 54;
 	const static uint8_t ICON_IDX_SUNNY = 60;
 
-	const static uint32_t WEATHER_REFRESH_MS = 3600000; // 3600000 every hour
+	const static uint32_t WEATHER_REFRESH_MS = 1200000; // 1200000 every 20 minites
 	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 10000;
 	const static uint8_t TEXT_WIDTH_PX = 64;
 	const static uint16_t TEXT_ANIMATE_DELAY_MS = 30;

@@ -52,11 +52,14 @@ public:
 	/** "Partly Cloudy", "Thunderstorms" or "Sunny" */
 	char* getWeather_text(uint8_t day);
 
-	/** min temp in celclus */
+	/** min temp */
 	char* getWeather_low(uint8_t day);
 
-	/** max temp in celclus */
+	/** max temp */
 	char* getWeather_high(uint8_t day);
+
+	/** current temp  */
+	char* getCurrentWeather_temp();
 
 	uint8_t getWeather_code(uint8_t day);
 
@@ -68,10 +71,12 @@ public:
 
 private:
 	const static uint32_t SERIAL_BAUD = 115200;
+	const static uint16_t SERIAL_TIMOUT_MS = 100;
 
 	// keep a large buffer in order to be able to show possible errors
 	const static uint8_t SBUF_SIZE = 64;
-	char sbuf[SBUF_SIZE];
+	const static uint8_t SBUF_ACLOC_SIZE = SBUF_SIZE + 1;
+	char sbuf[SBUF_ACLOC_SIZE];
 	inline HardwareSerial& serial();
 
 	/**

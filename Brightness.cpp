@@ -37,13 +37,13 @@ void Brightness::cycle() {
 	lastAval = aval;
 
 	uint8_t brightness = 0;
-	if (aval <= 400) {
+	if (aval <= 500) {
 		brightness = 15;
 
-	} else if (aval <= 600) {
+	} else if (aval <= 700) {
 		brightness = 10;
 
-	} else if (aval <= 700) {
+	} else if (aval <= 800) {
 		brightness = 5;
 	}
 	display->brightness(brightness);
