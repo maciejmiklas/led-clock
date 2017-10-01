@@ -94,7 +94,7 @@ void DateTimeDisplay::refreshDate() {
 	case 2:
 	default: {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
-		append(bufDate, 1, DISPLAY_DATE_CHARS, serialAPI->getCurrentWeather_temp());
+		appendCenter(bufDate, DISPLAY_DATE_CHARS, serialAPI->getCurrentWeather_temp());
 	}
 		switchDispPos = -1;
 		break;

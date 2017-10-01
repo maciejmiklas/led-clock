@@ -85,12 +85,15 @@ void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 	readGarbage();
 	serial().write(request, cmdSize);
 	serial().flush();
+
+	sbuf[0] = '\0';
 	uint8_t readSize = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
 	sbuf[readSize] = '\0';
 #if LOG
 	logs(F("SR-> "), request, cmdSize);
 	logs(F("SR<- "), sbuf, SBUF_SIZE);
 #endif
+	readGarbage();
 }
 
 char* SerialAPI::getESPStatus() {
