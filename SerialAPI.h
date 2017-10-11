@@ -28,6 +28,8 @@
 #define API_USE_SERIAL_2 false
 #define API_USE_SERIAL_3 false
 
+#define SERIAL_ENABLE true
+
 class SerialAPI {
 public:
 	SerialAPI();

@@ -56,7 +56,7 @@ SerialAPI::~SerialAPI() {
 }
 
 inline void SerialAPI::readGarbage() {
-#if LOG
+#if LOG_LC
 	uint8_t idx = 0;
 	while (serial().available() > 0) {
 		int read = serial().read();
@@ -82,18 +82,22 @@ void SerialAPI::cmd(const char *request) {
 }
 
 void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
+#if SERIAL_ENABLE
 	readGarbage();
 	serial().write(request, cmdSize);
 	serial().flush();
 
 	sbuf[0] = '\0';
 	uint8_t readSize = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
-	sbuf[readSize] = '\0';
-#if LOG
+
+#if LOG_LC
 	logs(F("SR-> "), request, cmdSize);
-	logs(F("SR<- "), sbuf, SBUF_SIZE);
+	logs(F("SR<- "), sbuf, readSize);
 #endif
+
+	sbuf[readSize] = '\0';
 	readGarbage();
+#endif
 }
 
 char* SerialAPI::getESPStatus() {
@@ -141,7 +145,7 @@ uint8_t SerialAPI::getWeather_code(uint8_t day) {
 		val -= 48;
 	}
 
-#if LOG
+#if LOG_LC
 	log(F("WCD %d = %d -> %d"), day, sbuf[0], val);
 #endif
 	return val;

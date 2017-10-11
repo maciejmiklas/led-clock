@@ -9,5 +9,6 @@
 #include "WeatherDisplay.h"
 #include "SerialAPI.h"
 #include "Brightness.h"
+#include "TempSensor.h"
 
 #endif /* LEDCLOCK_H_ */

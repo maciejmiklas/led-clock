@@ -22,12 +22,13 @@
 #include "SerialAPI.h"
 #include "ArdLog.h"
 #include "DispUtil.h"
+#include "TempSensor.h"
 
 const static uint8_t TIME_SEPARATOR_FRAMES = 2;
 
 class DateTimeDisplay {
 public:
-	DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI);
+	DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI, TempSensor *tempSensor);
 	virtual ~DateTimeDisplay();
 	void cycle();
 private:
@@ -40,6 +41,7 @@ private:
 
 	Canvas * const canvas;
 	SerialAPI * const serialAPI;
+	TempSensor *tempSensor;
 	StaticText8x8 timeArea;
 	StaticText8x8 dateArea;
 	uint32_t lastDateSwitchMs;

@@ -19,9 +19,10 @@
 char bufTime[] = { ' ', ' ', ' ', ' ', ' ', '\0' };
 char bufDate[] = { ' ', ' ', ' ', ' ', ' ', '\0' };
 
-DateTimeDisplay::DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI) :
-		canvas(canvas), serialAPI(serialAPI), timeArea(canvas, DISPLAY_TIME_WIDTH), dateArea(canvas,
-				DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeRefreshMs(0), switchDispPos(0), showingTimeDots(true) {
+DateTimeDisplay::DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI, TempSensor *tempSensor) :
+		canvas(canvas), serialAPI(serialAPI), tempSensor(tempSensor), timeArea(canvas, DISPLAY_TIME_WIDTH), dateArea(
+				canvas, DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeRefreshMs(0), switchDispPos(1), showingTimeDots(
+		true) {
 }
 
 DateTimeDisplay::~DateTimeDisplay() {
@@ -70,7 +71,9 @@ void DateTimeDisplay::refreshDate() {
 
 	lastDateSwitchMs = time;
 	switch (switchDispPos) {
-	case 0: {
+
+	// Date: DD-MM
+	case 1: {
 		char* dd = serialAPI->getDate_DD();
 		bufDate[0] = dd[0];
 		bufDate[1] = dd[1];
@@ -81,7 +84,8 @@ void DateTimeDisplay::refreshDate() {
 	}
 		break;
 
-	case 1: {
+		// Date: DDD
+	case 2: {
 		char* ddd = serialAPI->getDate_DDD();
 		bufDate[0] = ' ';
 		bufDate[1] = ddd[0];
@@ -91,15 +95,25 @@ void DateTimeDisplay::refreshDate() {
 	}
 		break;
 
-	case 2:
+		// Temp outside
+	case 3: {
+		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
+		char* temp = serialAPI->getCurrentWeather_temp();
+		append(bufDate, 2, DISPLAY_DATE_CHARS, temp);
+	}
+		break;
+
+		// Temp inside
+	case 4:
 	default: {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
-		appendCenter(bufDate, DISPLAY_DATE_CHARS, serialAPI->getCurrentWeather_temp());
+		float tempIn = tempSensor->getTemp();
+		dtostrf(tempIn, 5, 1, bufDate);
 	}
-		switchDispPos = -1;
+		switchDispPos = 0;
 		break;
 	}
 	switchDispPos++;
-
+	bufDate[DISPLAY_DATE_CHARS] = '\0';
 	dateArea.box(0, 8, bufDate);
 }

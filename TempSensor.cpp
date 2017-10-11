@@ -14,37 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Brightness.h"
+#include "TempSensor.h"
 
-Brightness::Brightness(Display * display) :
-		lastRefreshMs(0), lastAval(0), display(display) {
+TempSensor::TempSensor() :
+		curentTemp(0), lastProbeTime(0), oneWire(DIG_PIN_TEMP_SENSOR), dallasTemperature(&oneWire) {
+	dallasTemperature.begin();
+	readTemp();
 }
 
-Brightness::~Brightness() {
+float TempSensor::getTemp() {
+	return curentTemp;
 }
 
-void Brightness::cycle() {
-	uint32_t time = ms();
-	if (time - lastRefreshMs < REFRESH_MS) {
+void TempSensor::cycle() {
+	uint32_t millis = ms();
+	if (millis - lastProbeTime < PROBE_FREQ_MS) {
 		return;
 	}
-	lastRefreshMs = time;
-	int16_t aval = analogRead(ANALOG_PIN);
+	lastProbeTime = millis;
+	readTemp();
 
-	if (abs(aval - lastAval) < MIN_CHANGE) {
-		return;
-	}
-	lastAval = aval;
+}
 
-	uint8_t brightness = LEVEL_1_OUT;
-	if (aval <= LEVEL_3) {
-		brightness = LEVEL_3_OUT; //400
+inline void TempSensor::readTemp() {
+	dallasTemperature.requestTemperatures();
+	curentTemp = dallasTemperature.getTempCByIndex(0) + 0.5;
 
-	} else if (aval <= LEVEL_2) {
-		brightness = LEVEL_2_OUT; //600
-	}
 #if LOG_LC
-	log(F("BR %d->%d"), aval, brightness);
+	char buffer[6];
+	dtostrf(curentTemp, 5, 1, buffer);
+	log(F("TS TMP %s"), buffer);
 #endif
-	display->brightness(brightness);
+
+#if USE_FEHRENHEIT
+	curentTemp = curentTemp * 1.8 + 32;
+#endif
 }

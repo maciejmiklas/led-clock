@@ -36,7 +36,7 @@ After the display is ready, you should connect ESP8266 and photo-resistor. Schem
 <img src="/doc/img/LED_Clock_schem.png" width="640px"/>
 
 # Software for Arduino Mega
-This project (LEDClock) contains main software part,  you have to compile it and upload to Arduino. Compilation requires SPI module and two other libraries: https://github.com/maciejmiklas/LEDDisplay and https://github.com/maciejmiklas/LEDDisplay
+This project (LEDClock) contains main software part,  you have to compile it and upload to Arduino. Compilation requires SPI module and two other libraries: https://github.com/maciejmiklas/LEDDisplay and https://github.com/maciejmiklas/ArdLog
 
 In [this blog post](http://maciej-miklas.blogspot.com/2017/03/weather-station-based-on-arduino-and.html#sloeber) you will find instrucitons howto compile it using Sloeber.
 

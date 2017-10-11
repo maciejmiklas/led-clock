@@ -14,37 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Brightness.h"
+#ifndef TEMPSENSOR_H_
+#define TEMPSENSOR_H_
 
-Brightness::Brightness(Display * display) :
-		lastRefreshMs(0), lastAval(0), display(display) {
-}
+#include "Arduino.h"
+#include "OneWire.h"
+#include "DallasTemperature.h"
+#include "ArdLog.h"
+#include "DispUtil.h"
 
-Brightness::~Brightness() {
-}
+class TempSensor {
+public:
+	TempSensor();
+	float getTemp();
+	void cycle();
 
-void Brightness::cycle() {
-	uint32_t time = ms();
-	if (time - lastRefreshMs < REFRESH_MS) {
-		return;
-	}
-	lastRefreshMs = time;
-	int16_t aval = analogRead(ANALOG_PIN);
+private:
+	const static uint8_t DIG_PIN_TEMP_SENSOR = 44;
+	const static uint16_t PROBE_FREQ_MS = 60000;
 
-	if (abs(aval - lastAval) < MIN_CHANGE) {
-		return;
-	}
-	lastAval = aval;
+	float curentTemp;
+	uint32_t lastProbeTime;
+	OneWire oneWire;
+	DallasTemperature dallasTemperature;
 
-	uint8_t brightness = LEVEL_1_OUT;
-	if (aval <= LEVEL_3) {
-		brightness = LEVEL_3_OUT; //400
+	inline void readTemp();
+	void init();
+};
 
-	} else if (aval <= LEVEL_2) {
-		brightness = LEVEL_2_OUT; //600
-	}
-#if LOG_LC
-	log(F("BR %d->%d"), aval, brightness);
-#endif
-	display->brightness(brightness);
-}
+#endif /* TEMPSENSOR_H_ */

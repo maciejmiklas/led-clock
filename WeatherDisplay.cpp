@@ -213,7 +213,7 @@ void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
 			uint8_t dataRow = kitRow + dataRowOffset;
 			uint8_t data = pgm_read_byte(&WEATHER_ICON[iconIdx][kitRow]);
 			iconData[dataRow][dataCol] = data;
-#if LOG
+#if LOG_LC
 			log(F("YW I: (%d,%d) = (%d,%d) = %d"), dataRow, dataCol, iconIdx, kitRow, data);
 #endif
 		}
@@ -260,15 +260,17 @@ void WeatherDisplay::refreshWeatherText() {
 		idx = sep(idx, 5);
 	}
 
-#if WEATHER_NODE_INFO
+#if SHOW_ESP_STATUS
 	idx = sep(idx, 5);
 	idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getESPStatus());
-	idx = sep(idx, 5);
+	if (idx > 2) {
+		idx = sep(idx, 5);
+	}
 #endif
 
 	buf[idx++] = '\0';
 
-#if LOG
+#if LOG_LC
 	log(F("YW T(%d):"), idx);
 	logs(buf, TEXT_BUFFER_SIZE);
 #endif

@@ -26,7 +26,7 @@ const static uint8_t WEATHER_ICON_DISPLAYS = 6;
 const static uint8_t WEATHER_ICONS = 11;
 const static uint8_t WEATHER_ICON_SIZE = WEATHER_ICON_DISPLAYS * WEATHER_ICONS;
 
-#define WEATHER_NODE_INFO true
+#define SHOW_ESP_STATUS true
 
 class WeatherDisplay {
 public:
