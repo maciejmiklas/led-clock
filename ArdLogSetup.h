@@ -21,7 +21,7 @@
 #define LOG_FREE_RAM false
 
 /** Enables logger so that it can log over serial port. */
-#define ENABLE_LOGGER true
+#define ENABLE_LOGGER false
 
 /** Enables log on Debug level. */
 #define LOG false

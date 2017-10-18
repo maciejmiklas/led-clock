@@ -100,6 +100,7 @@ void DateTimeDisplay::refreshDate() {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
 		char* temp = serialAPI->getCurrentWeather_temp();
 		append(bufDate, 2, DISPLAY_DATE_CHARS, temp);
+		bufDate[0] = 6;
 	}
 		break;
 
@@ -109,6 +110,7 @@ void DateTimeDisplay::refreshDate() {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
 		float tempIn = tempSensor->getTemp();
 		dtostrf(tempIn, 5, 1, bufDate);
+		bufDate[0] = 5;
 	}
 		switchDispPos = 0;
 		break;

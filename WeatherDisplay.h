@@ -26,13 +26,12 @@ const static uint8_t WEATHER_ICON_DISPLAYS = 6;
 const static uint8_t WEATHER_ICONS = 11;
 const static uint8_t WEATHER_ICON_SIZE = WEATHER_ICON_DISPLAYS * WEATHER_ICONS;
 
-#define SHOW_ESP_STATUS true
-
 class WeatherDisplay {
 public:
 	WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI);
 	virtual ~WeatherDisplay();
 	void cycle();
+	ScrollingText8x8 weatherTextArea;
 private:
 	const static uint8_t ICON_IDX_MIX_SUN_RAIN = 0;
 	const static uint8_t ICON_IDX_PARTLY_SUNNY = 6;
@@ -64,7 +63,6 @@ private:
 
 	Canvas* const canvas;
 	SerialAPI* const serialAPI;
-	ScrollingText8x8 weatherTextArea;
 	uint32_t lastWeatherRefreshMs;
 	uint32_t weatherRefreshMs;
 	char buf[TEXT_BUFFER_SIZE];

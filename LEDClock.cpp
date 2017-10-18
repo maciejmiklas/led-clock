@@ -6,6 +6,7 @@ WeatherDisplay *weatherDisplay;
 SerialAPI *serialAPI;
 Brightness *brightness;
 TempSensor *tempSensor;
+TempSensorDriver * tempSensorDriver;
 
 static ss_t **ss;
 
@@ -75,6 +76,7 @@ void setup() {
 	dateTimeDisplay = new DateTimeDisplay(disp, serialAPI, tempSensor);
 	weatherDisplay = new WeatherDisplay(disp, serialAPI);
 	brightness = new Brightness(disp);
+	tempSensorDriver = new TempSensorDriver(&weatherDisplay->weatherTextArea, tempSensor);
 }
 
 void loop() {
@@ -86,6 +88,5 @@ void loop() {
 	weatherDisplay->cycle();
 	brightness->cycle();
 	disp->flush();
-	tempSensor->cycle();
 }
 

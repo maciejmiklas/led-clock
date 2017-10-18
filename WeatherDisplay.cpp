@@ -117,7 +117,7 @@ PROGMEM const uint8_t WEATHER_ICON[WEATHER_ICON_SIZE][FONT8_HEIGHT] = {
 		};
 
 WeatherDisplay::WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI) :
-		canvas(canvas), serialAPI(serialAPI), weatherTextArea(canvas, TEXT_WIDTH_PX, TEXT_ANIMATE_DELAY_MS, 1), lastWeatherRefreshMs(
+		weatherTextArea(canvas, TEXT_WIDTH_PX, TEXT_ANIMATE_DELAY_MS, 1), canvas(canvas), serialAPI(serialAPI), lastWeatherRefreshMs(
 				0), weatherRefreshMs(WEATHER_REFRESH_MS), iconData(alloc2DArray8(ICON_HEIGHT_PX, ICON_BYTE_WIDTH)) {
 	weatherTextArea.init();
 
@@ -235,6 +235,11 @@ void WeatherDisplay::refreshWeatherText() {
 		}
 		// day
 		idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_DDD(day));
+		if (day > 1) {
+			buf[idx++] = '(';
+			buf[idx++] = '0' + day - 1;
+			buf[idx++] = ')';
+		}
 		buf[idx++] = 3;
 		buf[idx++] = 4;
 		idx = sep(idx, 1);
@@ -259,15 +264,9 @@ void WeatherDisplay::refreshWeatherText() {
 		}
 		idx = sep(idx, 5);
 	}
-
-#if SHOW_ESP_STATUS
 	idx = sep(idx, 5);
 	idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getESPStatus());
-	if (idx > 2) {
-		idx = sep(idx, 5);
-	}
-#endif
-
+	idx = sep(idx, 5);
 	buf[idx++] = '\0';
 
 #if LOG_LC

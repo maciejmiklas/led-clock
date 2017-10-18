@@ -75,9 +75,9 @@ Init-files are there: *NodeMCUUtils/init/serialInit*
 * serialInit.lua
 
 # Matching LIB versions
-* [LED Display](https://github.com/maciejmiklas/LEDDisplay/releases/tag/v1.1.0)
-* [Arduino Logger](https://github.com/maciejmiklas/ArdLog/releases/tag/v1.1.0)
-* [NodeMCU weather and clock](https://github.com/maciejmiklas/NodeMCUUtils/releases/tag/v1.4.0)
+* [LED Display](https://github.com/maciejmiklas/LEDDisplay/releases/tag/v1.2.0)
+* [Arduino Logger](https://github.com/maciejmiklas/ArdLog/releases/tag/v2.1.0)
+* [NodeMCU weather and clock](https://github.com/maciejmiklas/NodeMCUUtils/releases/tag/v1.5.0)
 
 
 

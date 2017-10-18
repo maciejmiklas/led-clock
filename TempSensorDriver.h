@@ -14,39 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef TEMPSENSORDRIVER_H_
+#define TEMPSENSORDRIVER_H_
+
+#include "ScrollingText8x8.h"
 #include "TempSensor.h"
 
-TempSensor::TempSensor() :
-		curentTemp(0), lastProbeTime(0), oneWire(DIG_PIN_TEMP_SENSOR), dallasTemperature(&oneWire) {
-	dallasTemperature.begin();
-	readTemp();
-}
+class TempSensorDriver {
+public:
+	TempSensorDriver(ScrollingText8x8* text, TempSensor* sensor);
+	virtual ~TempSensorDriver();
 
-float TempSensor::getTemp() {
-	return curentTemp;
-}
+private:
+	class TextListener: public ScrollingText8x8::Listener {
 
-void TempSensor::cycle() {
-	uint32_t millis = ms();
-	if (millis - lastProbeTime < PROBE_FREQ_MS) {
-		return;
-	}
-	lastProbeTime = millis;
-	readTemp();
+	public:
+		TextListener(TempSensor* sensor);
+		virtual ~TextListener();
+		void onScrollEnd();
+	private:
+		TempSensor* sensor;
+	};
 
-}
+	TextListener listener;
+};
 
-inline void TempSensor::readTemp() {
-	dallasTemperature.requestTemperatures();
-	curentTemp = dallasTemperature.getTempCByIndex(0) + READ_ADJUST;
-
-#if LOG_LC
-	char buffer[6];
-	dtostrf(curentTemp, 5, 1, buffer);
-	log(F("TS TMP %s"), buffer);
-#endif
-
-#if USE_FEHRENHEIT
-	curentTemp = curentTemp * 1.8 + 32;
-#endif
-}
+#endif /* TEMPSENSORDRIVER_H_ */

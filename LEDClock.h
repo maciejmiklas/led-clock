@@ -10,5 +10,6 @@
 #include "SerialAPI.h"
 #include "Brightness.h"
 #include "TempSensor.h"
+#include "TempSensorDriver.h"
 
 #endif /* LEDCLOCK_H_ */

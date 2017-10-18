@@ -14,39 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "TempSensor.h"
+#include "TempSensorDriver.h"
 
-TempSensor::TempSensor() :
-		curentTemp(0), lastProbeTime(0), oneWire(DIG_PIN_TEMP_SENSOR), dallasTemperature(&oneWire) {
-	dallasTemperature.begin();
-	readTemp();
+TempSensorDriver::TempSensorDriver(ScrollingText8x8* text, TempSensor* sensor) :
+		listener(sensor) {
+	text->setListener(&listener);
 }
 
-float TempSensor::getTemp() {
-	return curentTemp;
+TempSensorDriver::~TempSensorDriver() {
 }
 
-void TempSensor::cycle() {
-	uint32_t millis = ms();
-	if (millis - lastProbeTime < PROBE_FREQ_MS) {
-		return;
-	}
-	lastProbeTime = millis;
-	readTemp();
-
+TempSensorDriver::TextListener::TextListener(TempSensor* sensor) :
+		sensor(sensor) {
 }
 
-inline void TempSensor::readTemp() {
-	dallasTemperature.requestTemperatures();
-	curentTemp = dallasTemperature.getTempCByIndex(0) + READ_ADJUST;
+TempSensorDriver::TextListener::~TextListener() {
+}
 
+void TempSensorDriver::TextListener::onScrollEnd() {
 #if LOG_LC
-	char buffer[6];
-	dtostrf(curentTemp, 5, 1, buffer);
-	log(F("TS TMP %s"), buffer);
+	log(F("TSD exec"));
 #endif
-
-#if USE_FEHRENHEIT
-	curentTemp = curentTemp * 1.8 + 32;
-#endif
+	sensor->cycle();
 }
+

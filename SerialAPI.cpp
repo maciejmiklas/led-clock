@@ -102,6 +102,9 @@ void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 
 char* SerialAPI::getESPStatus() {
 	cmd(CMD_GET_ESP_STATUS);
+	if (sbuf[0] == 'O' && sbuf[1] == 'K') {
+		sbuf[0] = '\0';
+	}
 	return sbuf;
 }
 
