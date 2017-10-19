@@ -1,6 +1,6 @@
 [![Click me to play video :)](/doc/img/youtube.jpg)](https://www.youtube.com/watch/xcpKJU7HzQs)
 
-[This video shows boxes version and latest development version](https://www.youtube.com/watch?v=c8wJdQJHX8o)
+[This video shows boxed version with latest improvements](https://www.youtube.com/watch?v=c8wJdQJHX8o)
 
 This is a weather station with forecast for three days, current temperature and a clock with local time and date.
 
