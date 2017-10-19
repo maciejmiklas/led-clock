@@ -1,5 +1,8 @@
 [![Click me to play video :)](/doc/img/youtube.jpg)](https://www.youtube.com/watch/xcpKJU7HzQs)
-This is a weather station with forecast for three days, it also includes clock with local time and date.
+
+[This video shows boxes version and latest development version](https://www.youtube.com/watch?v=c8wJdQJHX8o)
+
+This is a weather station with forecast for three days, current temperature and a clock with local time and date.
 
 The whole project is based on Arduino, NodeMCU provides access to the Internet over WiFi. The display is built from single LEDs. Since they can be really bright it adopts illumination based on light conditions.
 <img src="/doc/img/ledclockarch.png" width="640px"/>
