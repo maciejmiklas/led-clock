@@ -77,6 +77,8 @@ void setup() {
 	weatherDisplay = new WeatherDisplay(disp, serialAPI);
 	brightness = new Brightness(disp);
 	tempSensorDriver = new TempSensorDriver(&weatherDisplay->weatherTextArea, tempSensor);
+
+	weatherDisplay->init();
 }
 
 void loop() {

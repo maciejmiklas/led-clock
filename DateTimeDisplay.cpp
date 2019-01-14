@@ -99,8 +99,10 @@ void DateTimeDisplay::refreshDate() {
 	case 3: {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
 		char* temp = serialAPI->getCurrentWeather_temp();
-		append(bufDate, 2, DISPLAY_DATE_CHARS, temp);
-		bufDate[0] = 6;
+		if (temp[0] != 'E') {
+			append(bufDate, 2, DISPLAY_DATE_CHARS, temp);
+			bufDate[0] = 6;
+		}
 	}
 		break;
 

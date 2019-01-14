@@ -23,27 +23,28 @@ const char CMD_GET_DATE_DDD[] = { 'C', 'D', '3', '\r', '\n', '\0' };
 const char CMD_GET_DATE_DD[] = { 'C', 'D', 'D', '\r', '\n', '\0' };
 const char CMD_GET_DATE_MM[] = { 'C', 'M', 'M', '\r', '\n', '\0' };
 const char CMD_GET_ESP_STATUS[] = { 'G', 'S', 'S', '\r', '\n', '\0' };
+const char CMD_GET_WEATHER_STATUS[] = { 'W', 'S', 'T', '\r', '\n', '\0' };
 
-const char CMD_GET_CUR_TEMP[] = { 'Y', 'C', 'W', ' ', 't', 'e', 'm', 'p', '\r', '\n', '\0' };
+const char CMD_GET_CUR_TEMP[] = { 'W', 'C', 'W', ' ', 't', 'e', 'm', 'p', '\r', '\n', '\0' };
 const uint8_t CMD_GET_CUR_TEMP_SIZE = 10;
 
 const uint8_t CMD_GET_WEATHER_DAY_IDX = 2;
 
 const uint8_t CMD_GET_WEATHER_DAY_SIZE = 9;
-char CMD_GET_WEATHER_DAY[] = { 'Y', 'F', '1', ' ', 'd', 'a', 'y', '\r', '\n', '\0' };
+char CMD_GET_WEATHER_DAY[] = { 'W', 'F', '1', ' ', 'd', 'a', 'y', '\r', '\n', '\0' };
 
 const uint8_t CMD_GET_WEATHER_TEXT_SIZE = 10;
-char CMD_GET_WEATHER_TEXT[] = { 'Y', 'F', '1', ' ', 't', 'e', 'x', 't', '\r', '\n', '\0' };
+char CMD_GET_WEATHER_TEXT[] = { 'W', 'F', '1', ' ', 't', 'e', 'x', 't', '\r', '\n', '\0' };
 
 const uint8_t CMD_GET_WEATHER_LOW_SIZE = 9;
-char CMD_GET_WEATHER_LOW[] = { 'Y', 'F', '1', ' ', 'l', 'o', 'w', '\r', '\n', '\0' };
+char CMD_GET_WEATHER_LOW[] = { 'W', 'F', '1', ' ', 'l', 'o', 'w', '\r', '\n', '\0' };
 
 const uint8_t CMD_GET_WEATHER_HIGH_SIZE = 10;
-char CMD_GET_WEATHER_HIGH[] = { 'Y', 'F', '1', ' ', 'h', 'i', 'g', 'h', '\r', '\n', '\0' };
+char CMD_GET_WEATHER_HIGH[] = { 'W', 'F', '1', ' ', 'h', 'i', 'g', 'h', '\r', '\n', '\0' };
 
 const uint8_t CMD_GET_WEATHER_CODE_DAY_IDX = 4;
 const uint8_t CMD_GET_WEATHER_CODE_SIZE = 7;
-char CMD_GET_WEATHER_CODE[] = { 'Y', 'W', 'C', ' ', '1', '\r', '\n', '\0' };
+char CMD_GET_WEATHER_CODE[] = { 'W', 'W', 'C', ' ', '1', '\r', '\n', '\0' };
 
 SerialAPI::SerialAPI() {
 	serial().begin(SERIAL_BAUD);
@@ -106,6 +107,14 @@ char* SerialAPI::getESPStatus() {
 		sbuf[0] = '\0';
 	}
 	return sbuf;
+}
+
+boolean SerialAPI::getWeather_status() {
+	cmd(CMD_GET_WEATHER_STATUS);
+	if (sbuf[0] == 'O' && sbuf[1] == 'K') {
+		return true;
+	}
+	return false;
 }
 
 char* SerialAPI::getTime_HH() {

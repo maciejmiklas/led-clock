@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ *vc
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,8 @@
  */
 #ifndef ARD_LOG_DEFSETUP_H
 #define ARD_LOG_DEFSETUP_H
+
+#include "Arduino.h"
 
 /** Logs free RAM if it has changed on every log_cycle() call. */
 #define LOG_FREE_RAM false
@@ -43,7 +45,7 @@
 #define LOG_TIME true
 
 /** Enable logs(....) and logc(...) functions. */
-#define LOGS true
+#define LOGS false
 
 /**
  * True will get current time on each call on log(), otherwise we will get one sample for each log_cycle() and

@@ -51,6 +51,8 @@ public:
 	/** DD, always 2 characters */
 	char* getDate_MM();
 
+	boolean getWeather_status();
+
 	/** "Partly Cloudy", "Thunderstorms" or "Sunny" */
 	char* getWeather_text(uint8_t day);
 

@@ -30,7 +30,7 @@ public:
 	void cycle();
 
 private:
-	constexpr static float READ_ADJUST = -0.5f;
+	constexpr static float READ_ADJUST = 0.0f;
 	const static uint8_t DIG_PIN_TEMP_SENSOR = 44;
 	const static uint16_t PROBE_FREQ_MS = 10000;
 

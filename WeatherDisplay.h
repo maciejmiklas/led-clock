@@ -31,6 +31,7 @@ public:
 	WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI);
 	virtual ~WeatherDisplay();
 	void cycle();
+	void init();
 	ScrollingText8x8 weatherTextArea;
 private:
 	const static uint8_t ICON_IDX_MIX_SUN_RAIN = 0;
@@ -45,8 +46,8 @@ private:
 	const static uint8_t ICON_IDX_CLOUDY = 54;
 	const static uint8_t ICON_IDX_SUNNY = 60;
 
-	const static uint32_t WEATHER_REFRESH_MS = 1200000; // 1200000 every 20 minites
-	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 10000;
+	const static uint32_t WEATHER_REFRESH_MS = 1200000; // 1200000 every 20 minutes
+	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 600000; // 600000 every 10 minutes
 	const static uint8_t TEXT_WIDTH_PX = 64;
 	const static uint16_t TEXT_ANIMATE_DELAY_MS = 30;
 	const static uint8_t TEXT_BUFFER_SIZE = 255;
@@ -68,8 +69,8 @@ private:
 	char buf[TEXT_BUFFER_SIZE];
 	uint8_t** const iconData;
 
-	void refreshWeatherText();
-	void refreshIcon();
+	void refreshWeatherText(boolean status);
+	void refreshIcon(boolean status);
 	uint8_t inline sep(uint8_t idx, uint8_t chars);
 	void inline copyIconData(uint8_t iconIdx);
 	void inline refreshIntervalError();
