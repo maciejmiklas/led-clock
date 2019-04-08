@@ -36,7 +36,7 @@ private:
 	const static uint8_t DISPLAY_DATE_CHARS = 5;
 	const static uint8_t DISPLAY_TIME_WIDTH = 40;
 	const static uint8_t DISPLAY_DATE_WIDTH = 40;
-	const static uint16_t DATE_SWITCH_MS = 3000;
+	const static uint16_t DATE_SWITCH_MS = 1500;
 	const static uint16_t TIME_REFRESH_MS = 1000;
 
 	Canvas * const canvas;

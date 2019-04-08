@@ -126,7 +126,7 @@ WeatherDisplay::~WeatherDisplay() {
 	delete2DArray8(iconData);
 }
 
-void WeatherDisplay::refreshIcon(boolean status) {
+void WeatherDisplay::refreshIcon() {
 	if (!status) {
 		copyIconData(ICON_ERROR);
 		return;
@@ -225,50 +225,13 @@ void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
 	canvas->paint(ICON_START_X_PX, ICON_START_Y_PX, ICON_WIDTH_PX, ICON_HEIGHT_PX, iconData);
 }
 
-void WeatherDisplay::refreshWeatherText(boolean status) {
-	cleanCharArray(buf, TEXT_BUFFER_SIZE);
-
-	uint8_t idx = 0;
-	if (status) {
-		for (uint8_t day = 1; day <= WEATHER_FORECAST_DAYS; day++) {
-			if (idx >= TEXT_BUFFER_MAX_SIZE) {
-				break;
-			}
-			// day
-			idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_DDD(day));
-			if (day > 1) {
-				buf[idx++] = '(';
-				buf[idx++] = '0' + day - 1;
-				buf[idx++] = ')';
-			}
-			buf[idx++] = 3;
-			buf[idx++] = 4;
-			idx = sep(idx, 1);
-
-			// low temp
-			buf[idx++] = 2;
-			idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_low(day));
-			if (idx >= TEXT_BUFFER_MAX_SIZE) {
-				break;
-			}
-			idx = sep(idx, 1);
-
-			// high temp
-			buf[idx++] = 1;
-			idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_high(day));
-			idx = sep(idx, 1);
-
-			// text
-			idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_text(day));
-			if (idx >= TEXT_BUFFER_MAX_SIZE) {
-				break;
-			}
-			idx = sep(idx, 5);
-		}
-		idx = sep(idx, 5);
+void WeatherDisplay::refreshWeatherText() {
+	if (!serialAPI->getWeather_textChange()) {
+		return;
 	}
-	idx = append(buf, idx, TEXT_BUFFER_MAX_SIZE, serialAPI->getESPStatus());
-	idx = sep(idx, 5);
+
+	cleanCharArray(buf, TEXT_BUFFER_SIZE);
+	uint8_t idx = append(buf, 0, TEXT_BUFFER_MAX_SIZE, serialAPI->getWeather_text());
 	buf[idx++] = '\0';
 
 #if LOG_LC
@@ -287,9 +250,8 @@ uint8_t inline WeatherDisplay::sep(uint8_t idx, uint8_t chars) {
 }
 
 void WeatherDisplay::init() {
-	boolean status = serialAPI->getWeather_status();
-	refreshWeatherText(status);
-	refreshIcon(status);
+	refreshWeatherText();
+	refreshIcon();
 }
 
 void WeatherDisplay::cycle() {
@@ -300,7 +262,6 @@ void WeatherDisplay::cycle() {
 		return;
 	}
 	lastWeatherRefreshMs = time;
-	boolean status = serialAPI->getWeather_status();
-	refreshWeatherText(status);
-	refreshIcon(status);
+	refreshWeatherText();
+	refreshIcon();
 }

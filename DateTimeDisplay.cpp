@@ -42,9 +42,9 @@ void inline DateTimeDisplay::refreshTime() {
 	lastTimeRefreshMs = time;
 
 	// HH
-	char* hh = serialAPI->getTime_HH();
-	bufTime[0] = hh[0];
-	bufTime[1] = hh[1];
+	char* hhmm = serialAPI->getTime_HH_MM();
+	bufTime[0] = hhmm[0];
+	bufTime[1] = hhmm[1];
 
 	// time separator
 	if (showingTimeDots) {
@@ -54,9 +54,8 @@ void inline DateTimeDisplay::refreshTime() {
 	}
 
 	// MM
-	char* mm = serialAPI->getTime_MM();
-	bufTime[3] = mm[0];
-	bufTime[4] = mm[1];
+	bufTime[3] = hhmm[2];
+	bufTime[4] = hhmm[3];
 
 	timeArea.box(0, 0, bufTime);
 
@@ -74,13 +73,12 @@ void DateTimeDisplay::refreshDate() {
 
 	// Date: DD-MM
 	case 1: {
-		char* dd = serialAPI->getDate_DD();
-		bufDate[0] = dd[0];
-		bufDate[1] = dd[1];
+		char* ddmm = serialAPI->getDate_DD_MM();
+		bufDate[0] = ddmm[0];
+		bufDate[1] = ddmm[1];
 		bufDate[2] = '-';
-		char* mm = serialAPI->getDate_MM();
-		bufDate[3] = mm[0];
-		bufDate[4] = mm[1];
+		bufDate[3] = ddmm[3];
+		bufDate[4] = ddmm[4];
 	}
 		break;
 
@@ -98,7 +96,7 @@ void DateTimeDisplay::refreshDate() {
 		// Temp outside
 	case 3: {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
-		char* temp = serialAPI->getCurrentWeather_temp();
+		char* temp = serialAPI->getWeather_currentTemp();
 		if (temp[0] != 'E') {
 			append(bufDate, 2, DISPLAY_DATE_CHARS, temp);
 			bufDate[0] = 6;

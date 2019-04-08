@@ -39,36 +39,23 @@ public:
 	char* getESPStatus();
 
 	// time of local time in 24h format. HH and MM have always 2 characters.
-	char* getTime_HH();
-	char* getTime_MM();
+	char* getTime_HH_MM();
 
 	/** "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", always 3 characters */
 	char* getDate_DDD();
 
-	/** DD, always 2 characters */
-	char* getDate_DD();
+	/** DD-MM, always 5 characters */
+	char* getDate_DD_MM();
 
-	/** DD, always 2 characters */
-	char* getDate_MM();
+	/** "TUE: -3.4 -2.3 clear sky, light snow  WED: -5.7 6.3 clear sky, light snow  THU: -6.6 1.0 clear sky" */
+	char* getWeather_text();
 
-	boolean getWeather_status();
-
-	/** "Partly Cloudy", "Thunderstorms" or "Sunny" */
-	char* getWeather_text(uint8_t day);
-
-	/** min temp */
-	char* getWeather_low(uint8_t day);
-
-	/** max temp */
-	char* getWeather_high(uint8_t day);
+	boolean getWeather_textChange();
 
 	/** current temp  */
-	char* getCurrentWeather_temp();
+	char* getWeather_currentTemp();
 
-	uint8_t getWeather_code(uint8_t day);
-
-	/** "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", always 3 characters */
-	char* getWeather_DDD(uint8_t day);
+	uint8_t getWeather_codes(uint8_t* codes);
 
 	/** read remaining data from serial to prevent errors */
 	inline void readGarbage();
@@ -82,6 +69,7 @@ private:
 	const static uint8_t SBUF_ACLOC_SIZE = SBUF_SIZE + 1;
 	char sbuf[SBUF_ACLOC_SIZE];
 	inline HardwareSerial& serial();
+	inline boolean hasError();
 
 	/**
 	 * Sends given #request into serial port and writes response into #response array. Method returns response length

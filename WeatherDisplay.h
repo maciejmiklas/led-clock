@@ -46,8 +46,8 @@ private:
 	const static uint8_t ICON_IDX_CLOUDY = 54;
 	const static uint8_t ICON_IDX_SUNNY = 60;
 
-	const static uint32_t WEATHER_REFRESH_MS = 1200000; // 1200000 every 20 minutes
-	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 600000; // 600000 every 10 minutes
+	const static uint32_t WEATHER_REFRESH_MS = 60000; // 60000 every minute
+	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 10000; // 10000 every 10 seconds
 	const static uint8_t TEXT_WIDTH_PX = 64;
 	const static uint16_t TEXT_ANIMATE_DELAY_MS = 30;
 	const static uint8_t TEXT_BUFFER_SIZE = 255;
@@ -55,7 +55,6 @@ private:
 	const static uint8_t ICON_BYTE_WIDTH = 3;
 	const static uint8_t ICON_ROWS = 2;
 	const static uint8_t ICON_ROW_BYTES = 3;
-	const static uint8_t WEATHER_FORECAST_DAYS = 3;
 	const static uint8_t ICON_BYTES = ICON_ROWS * ICON_ROW_BYTES;
 	const static uint8_t ICON_HEIGHT_PX = 16;
 	const static uint8_t ICON_WIDTH_PX = 24;
@@ -69,8 +68,8 @@ private:
 	char buf[TEXT_BUFFER_SIZE];
 	uint8_t** const iconData;
 
-	void refreshWeatherText(boolean status);
-	void refreshIcon(boolean status);
+	void refreshWeatherText();
+	void refreshIcon();
 	uint8_t inline sep(uint8_t idx, uint8_t chars);
 	void inline copyIconData(uint8_t iconIdx);
 	void inline refreshIntervalError();
