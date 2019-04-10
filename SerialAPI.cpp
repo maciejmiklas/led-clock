@@ -122,14 +122,14 @@ boolean SerialAPI::hasError() {
 	return sbuf[0] == 'E';
 }
 
-uint8_t SerialAPI::getWeather_codes(uint8_t* codes) {
+uint8_t SerialAPI::getWeather_codes(uint8_t* codes, uint8_t limit) {
 	cmd(CMD_GET_WEATHER_CODES);
 	if (hasError()) {
 		return 0;
 	}
 
 	uint8_t read = 0;
-	for (uint8_t i = 0; i < 20; i++) {
+	for (uint8_t i = 0; i < limit; i++) {
 		uint8_t nextChar = sbuf[i];
 		if (nextChar == '\0') {
 			break;

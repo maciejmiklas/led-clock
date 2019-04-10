@@ -55,7 +55,7 @@ public:
 	/** current temp  */
 	char* getWeather_currentTemp();
 
-	uint8_t getWeather_codes(uint8_t* codes);
+	uint8_t getWeather_codes(uint8_t* codes, uint8_t limit);
 
 	/** read remaining data from serial to prevent errors */
 	inline void readGarbage();

@@ -40,7 +40,7 @@ private:
 	const static uint8_t ICON_IDX_THUNDERSTORM = 18;
 	const static uint8_t ICON_IDX_MIX_SUN_THUNDERSTORM = 24;
 	const static uint8_t ICON_IDX_MOON = 30;
-	const static uint8_t ICON_ERROR = 36;
+	const static uint8_t ICON_EMPTY = 36;
 	const static uint8_t ICON_IDX_MIX_SUN_SNOW = 42;
 	const static uint8_t ICON_IDX_SNOW = 48;
 	const static uint8_t ICON_IDX_CLOUDY = 54;
@@ -49,7 +49,7 @@ private:
 	const static uint32_t WEATHER_REFRESH_MS = 60000; // 60000 every minute
 	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 10000; // 10000 every 10 seconds
 	const static uint8_t TEXT_WIDTH_PX = 64;
-	const static uint16_t TEXT_ANIMATE_DELAY_MS = 30;
+	const static uint8_t TEXT_ANIMATE_DELAY_MS = 30;
 	const static uint8_t TEXT_BUFFER_SIZE = 255;
 	const static uint8_t TEXT_BUFFER_MAX_SIZE = TEXT_BUFFER_SIZE - 10;
 	const static uint8_t ICON_BYTE_WIDTH = 3;
@@ -60,20 +60,30 @@ private:
 	const static uint8_t ICON_WIDTH_PX = 24;
 	const static uint8_t ICON_START_X_PX = 40;
 	const static uint8_t ICON_START_Y_PX = 0;
+	const static uint8_t CODES_SIZE = 5;
+	const static uint16_t CODES_REFRESH_MS = 500;
+	const static uint8_t CODES_PAUSE_CYCLES = 3;
 
 	Canvas* const canvas;
 	SerialAPI* const serialAPI;
 	uint32_t lastWeatherRefreshMs;
-	uint32_t weatherRefreshMs;
+	uint16_t weatherRefreshMs;
 	char buf[TEXT_BUFFER_SIZE];
 	uint8_t** const iconData;
+	uint8_t lastIcon;
+
+	uint8_t codes[CODES_SIZE];
+	uint8_t codesReadSize;
+	uint8_t codesIxd;
+	uint32_t codesLastRefreshMs;
 
 	void refreshWeatherText();
 	void refreshIcon();
+	void refreshCodes();
 	uint8_t inline sep(uint8_t idx, uint8_t chars);
 	void inline copyIconData(uint8_t iconIdx);
-	void inline refreshIntervalError();
-	void inline refreshIntervalOk();
+	void inline refreshWeather();
+
 };
 
 #endif /* WEATHERDISPLAY_H_ */

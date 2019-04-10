@@ -70,7 +70,7 @@ PROGMEM const uint8_t WEATHER_ICON[WEATHER_ICON_SIZE][FONT8_HEIGHT] = {
 		{ B00010001, B01000001, B00010000, B00000100, B00100000, B00000010, B01000000, B00010000 }, //
 		{ B11111000, B11111000, B11111100, B01111111, B00111111, B00011111, B10000111, B00000000 }, //
 		{ B00000000, B00000100, B00000000, B11000001, B11000100, B10000000, B00000010, B00010000 }, //
-// ICON_ERROR
+// ICON_EMPTY
 		{ B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000 }, //
 		{ B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000 }, //
 		{ B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000, B00000000 }, //
@@ -118,7 +118,8 @@ PROGMEM const uint8_t WEATHER_ICON[WEATHER_ICON_SIZE][FONT8_HEIGHT] = {
 
 WeatherDisplay::WeatherDisplay(Canvas *canvas, SerialAPI *serialAPI) :
 		weatherTextArea(canvas, TEXT_WIDTH_PX, TEXT_ANIMATE_DELAY_MS, 1), canvas(canvas), serialAPI(serialAPI), lastWeatherRefreshMs(
-				0), weatherRefreshMs(WEATHER_REFRESH_MS), iconData(alloc2DArray8(ICON_HEIGHT_PX, ICON_BYTE_WIDTH)) {
+				0), weatherRefreshMs(WEATHER_REFRESH_MS), iconData(alloc2DArray8(ICON_HEIGHT_PX, ICON_BYTE_WIDTH)), lastIcon(
+				255), codesReadSize(0), codesIxd(0), codesLastRefreshMs(0) {
 	weatherTextArea.init();
 }
 
@@ -127,13 +128,24 @@ WeatherDisplay::~WeatherDisplay() {
 }
 
 void WeatherDisplay::refreshIcon() {
-	if (!status) {
-		copyIconData(ICON_ERROR);
+	uint32_t time = ms();
+	if (time - codesLastRefreshMs < CODES_REFRESH_MS) {
 		return;
 	}
-	uint8_t code = serialAPI->getWeather_code(1);
-	uint8_t iconOffset;
+	codesLastRefreshMs = time;
 
+	uint8_t code = 255;
+	if (codesIxd < codesReadSize) {
+		code = codes[codesIxd];
+
+	} else if (codesIxd == codesReadSize + CODES_PAUSE_CYCLES - 1) {
+		codesIxd = 0;
+		return;
+	}
+
+	codesIxd++;
+
+	uint8_t iconOffset;
 	switch (code) {
 	case 0:
 		iconOffset = ICON_IDX_MIX_SUN_RAIN;
@@ -176,30 +188,16 @@ void WeatherDisplay::refreshIcon() {
 		break;
 
 	default:
-		iconOffset = ICON_ERROR;
-		refreshIntervalError();
+		iconOffset = ICON_EMPTY;
 		break;
 	}
 
-	if (iconOffset == ICON_ERROR) {
-		refreshIntervalError();
-	} else {
-		refreshIntervalOk();
-	}
-
-	copyIconData(iconOffset);
-}
-
-void inline WeatherDisplay::refreshIntervalError() {
-	weatherRefreshMs = WEATHER_REFRESH_ON_ERROR_MS;
-	lastWeatherRefreshMs = ms();
-}
-
-void inline WeatherDisplay::refreshIntervalOk() {
-	if (weatherRefreshMs != WEATHER_REFRESH_MS) {
-		weatherRefreshMs = WEATHER_REFRESH_MS;
+	if (iconOffset != lastIcon) {
+		copyIconData(iconOffset);
+		lastIcon = iconOffset;
 	}
 }
+
 void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
 	uint8_t iconEnd = iconIdx + ICON_BYTES;
 	uint8_t dataRowOffset = 0;
@@ -223,6 +221,15 @@ void inline WeatherDisplay::copyIconData(uint8_t iconIdx) {
 	}
 
 	canvas->paint(ICON_START_X_PX, ICON_START_Y_PX, ICON_WIDTH_PX, ICON_HEIGHT_PX, iconData);
+}
+
+void WeatherDisplay::refreshCodes() {
+	codesReadSize = serialAPI->getWeather_codes(codes, CODES_SIZE);
+	if (codesReadSize == 0) {
+		weatherRefreshMs = WEATHER_REFRESH_ON_ERROR_MS;
+	} else {
+		weatherRefreshMs = WEATHER_REFRESH_MS;
+	}
 }
 
 void WeatherDisplay::refreshWeatherText() {
@@ -251,17 +258,22 @@ uint8_t inline WeatherDisplay::sep(uint8_t idx, uint8_t chars) {
 
 void WeatherDisplay::init() {
 	refreshWeatherText();
+	refreshCodes();
 	refreshIcon();
+}
+
+void WeatherDisplay::refreshWeather() {
+	uint32_t time = ms();
+	if (time - lastWeatherRefreshMs > weatherRefreshMs) {
+		lastWeatherRefreshMs = time;
+		refreshWeatherText();
+		refreshCodes();
+	}
 }
 
 void WeatherDisplay::cycle() {
 	weatherTextArea.cycle();
 
-	uint32_t time = ms();
-	if (time - lastWeatherRefreshMs < weatherRefreshMs) {
-		return;
-	}
-	lastWeatherRefreshMs = time;
-	refreshWeatherText();
+	refreshWeather();
 	refreshIcon();
 }
