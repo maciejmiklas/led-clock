@@ -66,6 +66,7 @@ void setup() {
 #if ENABLE_LOGGER
 	log_setup();
 #endif
+	delay(3000);
 	serialAPI = new SerialAPI();
 
 	ss = setupSelectSlaveLines();
@@ -77,7 +78,6 @@ void setup() {
 	weatherDisplay = new WeatherDisplay(disp, serialAPI);
 	brightness = new Brightness(disp);
 	tempSensorDriver = new TempSensorDriver(&weatherDisplay->weatherTextArea, tempSensor);
-
 	weatherDisplay->init();
 }
 

@@ -35,9 +35,6 @@ public:
 	SerialAPI();
 	virtual ~SerialAPI();
 
-	/** Return ESP debug info. */
-	char* getESPStatus();
-
 	// time of local time in 24h format. HH and MM have always 2 characters.
 	char* getTime_HH_MM();
 
@@ -65,7 +62,7 @@ private:
 	const static uint16_t SERIAL_TIMOUT_MS = 100;
 
 	// keep a large buffer in order to be able to show possible errors
-	const static uint8_t SBUF_SIZE = 64;
+	const static uint8_t SBUF_SIZE = 250;
 	const static uint8_t SBUF_ACLOC_SIZE = SBUF_SIZE + 1;
 	char sbuf[SBUF_ACLOC_SIZE];
 	inline HardwareSerial& serial();

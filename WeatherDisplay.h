@@ -61,8 +61,8 @@ private:
 	const static uint8_t ICON_START_X_PX = 40;
 	const static uint8_t ICON_START_Y_PX = 0;
 	const static uint8_t CODES_SIZE = 5;
-	const static uint16_t CODES_REFRESH_MS = 500;
-	const static uint8_t CODES_PAUSE_CYCLES = 3;
+	const static uint16_t CODES_REFRESH_MS = 1000;
+	const static uint8_t CODES_PAUSE_CYCLES = 2;
 
 	Canvas* const canvas;
 	SerialAPI* const serialAPI;
@@ -77,7 +77,7 @@ private:
 	uint8_t codesIxd;
 	uint32_t codesLastRefreshMs;
 
-	void refreshWeatherText();
+	void refreshWeatherText(boolean force);
 	void refreshIcon();
 	void refreshCodes();
 	uint8_t inline sep(uint8_t idx, uint8_t chars);

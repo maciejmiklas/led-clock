@@ -52,14 +52,13 @@ void inline DateTimeDisplay::refreshTime() {
 	} else {
 		bufTime[2] = ' ';
 	}
+	showingTimeDots = !showingTimeDots;
 
 	// MM
-	bufTime[3] = hhmm[2];
-	bufTime[4] = hhmm[3];
+	bufTime[3] = hhmm[3];
+	bufTime[4] = hhmm[4];
 
 	timeArea.box(0, 0, bufTime);
-
-	showingTimeDots = !showingTimeDots;
 }
 
 void DateTimeDisplay::refreshDate() {
@@ -97,10 +96,8 @@ void DateTimeDisplay::refreshDate() {
 	case 3: {
 		cleanCharArray(bufDate, DISPLAY_DATE_CHARS);
 		char* temp = serialAPI->getWeather_currentTemp();
-		if (temp[0] != 'E') {
-			append(bufDate, 2, DISPLAY_DATE_CHARS, temp);
-			bufDate[0] = 6;
-		}
+		append(bufDate, 1, DISPLAY_DATE_CHARS, temp);
+		bufDate[0] = 6;
 	}
 		break;
 

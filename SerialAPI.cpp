@@ -16,17 +16,16 @@
  */
 #include "SerialAPI.h"
 
-const uint8_t CMD_SIZE = 5;
-const char CMD_GET_TIME_CHM[] = { 'C', 'H', 'M', '\r', '\n', '\0' };
-const char CMD_GET_DATE_DDD[] = { 'C', 'D', '3', '\r', '\n', '\0' };
-const char CMD_GET_DATE_DD_MM[] = { 'C', 'D', 'M', '\r', '\n', '\0' };
-const char CMD_GET_ESP_STATUS[] = { 'G', 'S', 'S', '\r', '\n', '\0' };
-const char CMD_GET_WEATHER_TEXT[] = { 'G', 'T', 'X', '\r', '\n', '\0' };
-const char CMD_GET_WEATHER_TEXT_CHANGE[] = { 'G', 'T', 'C', '\r', '\n', '\0' };
-const char CMD_GET_WEATHER_CODES[] = { 'W', 'F', 'C', '\r', '\n', '\0' };
+const uint8_t CMD_SIZE = 4;
+const char CMD_GET_TIME_CHM[] = { 'C', 'H', 'M', '\r', '\0' };
+const char CMD_GET_DATE_DDD[] = { 'C', 'D', '3', '\r', '\0' };
+const char CMD_GET_DATE_DD_MM[] = { 'C', 'D', 'M', '\r', '\0' };
+const char CMD_GET_WEATHER_TEXT[] = { 'G', 'T', 'X', '\r', '\0' };
+const char CMD_GET_WEATHER_TEXT_CHANGE[] = { 'G', 'T', 'C', '\r', '\0' };
+const char CMD_GET_WEATHER_CODES[] = { 'W', 'F', 'C', '\r', '\0' };
 
-const char CMD_GET_CUR_TEMP[] = { 'W', 'C', 'W', ' ', 't', 'e', 'm', 'p', '\r', '\n', '\0' };
-const uint8_t CMD_GET_CUR_TEMP_SIZE = 10;
+const char CMD_GET_CUR_TEMP[] = { 'W', 'C', 'W', ' ', 't', 'e', 'm', 'p', '\r', '\0' };
+const uint8_t CMD_GET_CUR_TEMP_SIZE = 9;
 
 const uint8_t CMD_GET_WEATHER_DAY_IDX = 2;
 
@@ -34,7 +33,6 @@ SerialAPI::SerialAPI() {
 	serial().begin(SERIAL_BAUD);
 	serial().setTimeout(SERIAL_TIMOUT_MS);
 	cleanCharArray(sbuf, SBUF_SIZE);
-	getESPStatus();
 }
 
 SerialAPI::~SerialAPI() {
@@ -69,28 +67,30 @@ void SerialAPI::cmd(const char *request) {
 void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 #if SERIAL_ENABLE
 	readGarbage();
+
+#if LOG_LC
+	logs(F("SR->"), request, cmdSize);
+#endif
 	serial().write(request, cmdSize);
 	serial().flush();
 
 	sbuf[0] = '\0';
 	uint8_t readSize = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
-
+	if (readSize == 0) {
+		sbuf[0] = 'E';
+		sbuf[1] = 'R';
+		sbuf[2] = '?';
+		sbuf[3] = '\0';
 #if LOG_LC
-	logs(F("SR-> "), request, cmdSize);
-	logs(F("SR<- "), sbuf, readSize);
+		log(F("SR 0-RESP"));
 #endif
-
-	sbuf[readSize] = '\0';
-	readGarbage();
+	} else {
+#if LOG_LC
+		logs(F("SR<-"), sbuf, readSize + 1);
 #endif
-}
-
-char* SerialAPI::getESPStatus() {
-	cmd(CMD_GET_ESP_STATUS);
-	if (sbuf[0] == 'O' && sbuf[1] == 'K') {
-		sbuf[0] = '\0';
+		sbuf[readSize] = '\0';
 	}
-	return sbuf;
+#endif
 }
 
 char* SerialAPI::getTime_HH_MM() {

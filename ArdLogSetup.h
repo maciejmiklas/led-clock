@@ -19,14 +19,11 @@
 
 #include "Arduino.h"
 
-/** Logs free RAM if it has changed on every log_cycle() call. */
-#define LOG_FREE_RAM false
-
 /** Enables logger so that it can log over serial port. */
-#define ENABLE_LOGGER false
+#define ENABLE_LOGGER true
 
 /** Enables log on Debug level. */
-#define LOG false
+#define LOG true
 
 /** Enables logging in LED Clock. */
 #define LOG_LC false
@@ -37,15 +34,15 @@
 /** Enables log on Trace level. */
 #define TRACE false
 
+/** Logs free RAM if it has changed on every log_cycle() call. */
+#define LOG_FREE_RAM false
+
 /** Log full time, or shorter version */
 #define LOG_FULL_TIME false
 #define LOG_SHORT_TIME true
 
 /** log time. When off, time will not be logged at all. */
 #define LOG_TIME true
-
-/** Enable logs(....) and logc(...) functions. */
-#define LOGS false
 
 /**
  * True will get current time on each call on log(), otherwise we will get one sample for each log_cycle() and
