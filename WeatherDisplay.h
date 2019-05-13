@@ -49,7 +49,7 @@ private:
 	const static uint32_t WEATHER_REFRESH_MS = 60000; // 60000 every minute
 	const static uint32_t WEATHER_REFRESH_ON_ERROR_MS = 10000; // 10000 every 10 seconds
 	const static uint8_t TEXT_WIDTH_PX = 64;
-	const static uint8_t TEXT_ANIMATE_DELAY_MS = 30;
+	const static uint8_t TEXT_ANIMATE_DELAY_MS = 20;
 	const static uint8_t TEXT_BUFFER_SIZE = 255;
 	const static uint8_t TEXT_BUFFER_MAX_SIZE = TEXT_BUFFER_SIZE - 10;
 	const static uint8_t ICON_BYTE_WIDTH = 3;

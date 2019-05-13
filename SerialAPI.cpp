@@ -77,8 +77,8 @@ void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 	sbuf[0] = '\0';
 	uint8_t readSize = serial().readBytesUntil('\n', sbuf, SBUF_SIZE);
 	if (readSize == 0) {
-		sbuf[0] = 'E';
-		sbuf[1] = 'R';
+		sbuf[0] = ERR_CH1;
+		sbuf[1] = ERR_CH2;
 		sbuf[2] = '?';
 		sbuf[3] = '\0';
 #if LOG_LC
@@ -93,13 +93,33 @@ void SerialAPI::cmd(const char *request, uint8_t cmdSize) {
 #endif
 }
 
+inline boolean SerialAPI::isNummeric(char ch) {
+	return ch >= 48 && ch <= 57;
+}
+
+inline boolean SerialAPI::isUpperCaseLetter(char ch) {
+	return ch >= 65 && ch <= 90;
+}
+
 char* SerialAPI::getTime_HH_MM() {
 	cmd(CMD_GET_TIME_CHM);
+
+	if (!isNummeric(sbuf[0]) || !isNummeric(sbuf[1])) {
+		sbufErr();
+	}
 	return sbuf;
 }
 
+inline void SerialAPI::sbufErr() {
+	sbuf[0] = ERR_CH1;
+	sbuf[1] = ERR_CH2;
+	sbuf[2] = '\0';
+}
 char* SerialAPI::getDate_DDD() {
 	cmd(CMD_GET_DATE_DDD);
+	if (!isUpperCaseLetter(sbuf[0])) {
+		sbufErr();
+	}
 	return sbuf;
 }
 
@@ -109,22 +129,30 @@ boolean SerialAPI::getWeather_textChange() {
 }
 
 char* SerialAPI::getDate_DD_MM() {
+	if (!isNummeric(sbuf[0]) || !isNummeric(sbuf[1])) {
+		sbufErr();
+	}
 	cmd(CMD_GET_DATE_DD_MM);
 	return sbuf;
 }
 
 char* SerialAPI::getWeather_currentTemp() {
+	char s0 = sbuf[0];
+	if (s0 != '-' && !isNummeric(s0)) {
+		sbufErr();
+	}
+
 	cmd(CMD_GET_CUR_TEMP, CMD_GET_CUR_TEMP_SIZE);
 	return sbuf;
 }
 
-boolean SerialAPI::hasError() {
-	return sbuf[0] == 'E';
+boolean SerialAPI::hasError(char* response) {
+	return response[0] == ERR_CH1 && response[1] == ERR_CH2;
 }
 
 uint8_t SerialAPI::getWeather_codes(uint8_t* codes, uint8_t limit) {
 	cmd(CMD_GET_WEATHER_CODES);
-	if (hasError()) {
+	if (hasError(sbuf)) {
 		return 0;
 	}
 
@@ -134,7 +162,7 @@ uint8_t SerialAPI::getWeather_codes(uint8_t* codes, uint8_t limit) {
 		if (nextChar == '\0') {
 			break;
 		}
-		if (nextChar == ',') {
+		if (!isNummeric(nextChar)) {
 			continue;
 		}
 		// we expect here ACSI character where numbers start with 48.

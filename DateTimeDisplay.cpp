@@ -22,7 +22,7 @@ char bufDate[] = { ' ', ' ', ' ', ' ', ' ', '\0' };
 DateTimeDisplay::DateTimeDisplay(Canvas *canvas, SerialAPI *serialAPI, TempSensor *tempSensor) :
 		canvas(canvas), serialAPI(serialAPI), tempSensor(tempSensor), timeArea(canvas, DISPLAY_TIME_WIDTH), dateArea(
 				canvas, DISPLAY_DATE_WIDTH), lastDateSwitchMs(0), lastTimeRefreshMs(0), switchDispPos(1), showingTimeDots(
-		true) {
+				true) {
 }
 
 DateTimeDisplay::~DateTimeDisplay() {
@@ -39,10 +39,14 @@ void inline DateTimeDisplay::refreshTime() {
 		return;
 	}
 
+	char* hhmm = serialAPI->getTime_HH_MM();
+	if (serialAPI->hasError(hhmm)) {
+		return;
+	}
+
 	lastTimeRefreshMs = time;
 
 	// HH
-	char* hhmm = serialAPI->getTime_HH_MM();
 	bufTime[0] = hhmm[0];
 	bufTime[1] = hhmm[1];
 
@@ -73,22 +77,26 @@ void DateTimeDisplay::refreshDate() {
 	// Date: DD-MM
 	case 1: {
 		char* ddmm = serialAPI->getDate_DD_MM();
-		bufDate[0] = ddmm[0];
-		bufDate[1] = ddmm[1];
-		bufDate[2] = '-';
-		bufDate[3] = ddmm[3];
-		bufDate[4] = ddmm[4];
+		if (!serialAPI->hasError(ddmm)) {
+			bufDate[0] = ddmm[0];
+			bufDate[1] = ddmm[1];
+			bufDate[2] = '-';
+			bufDate[3] = ddmm[3];
+			bufDate[4] = ddmm[4];
+		}
 	}
 		break;
 
 		// Date: DDD
 	case 2: {
 		char* ddd = serialAPI->getDate_DDD();
-		bufDate[0] = ' ';
-		bufDate[1] = ddd[0];
-		bufDate[2] = ddd[1];
-		bufDate[3] = ddd[2];
-		bufDate[4] = ' ';
+		if (!serialAPI->hasError(ddd)) {
+			bufDate[0] = ' ';
+			bufDate[1] = ddd[0];
+			bufDate[2] = ddd[1];
+			bufDate[3] = ddd[2];
+			bufDate[4] = ' ';
+		}
 	}
 		break;
 

@@ -32,6 +32,9 @@
 
 class SerialAPI {
 public:
+	const static char ERR_CH1 = 'E';
+	const static char ERR_CH2 = 'R';
+
 	SerialAPI();
 	virtual ~SerialAPI();
 
@@ -57,6 +60,8 @@ public:
 	/** read remaining data from serial to prevent errors */
 	inline void readGarbage();
 
+	boolean hasError(char* response);
+
 private:
 	const static uint32_t SERIAL_BAUD = 115200;
 	const static uint16_t SERIAL_TIMOUT_MS = 100;
@@ -66,7 +71,10 @@ private:
 	const static uint8_t SBUF_ACLOC_SIZE = SBUF_SIZE + 1;
 	char sbuf[SBUF_ACLOC_SIZE];
 	inline HardwareSerial& serial();
-	inline boolean hasError();
+	inline boolean isNummeric(char ch);
+	inline boolean isUpperCaseLetter(char ch);
+
+	inline void sbufErr();
 
 	/**
 	 * Sends given #request into serial port and writes response into #response array. Method returns response length
