@@ -48,13 +48,11 @@ In order to provide weather and time to Arduino you will have to clone this proj
 
 1. Compile firmware for NodeMCU/ESP32 so that it has all required modules: file, mqtt, gpio, net, node, tmr, uart, wifi, sjson. Theres is also already precomipled version in repo.
 
-2. Clone project containing Lua scripts: https://github.com/maciejmiklas/NodeMCUUtils
+2. Edit *serial_api_clock.lua* and set UTC offset for your location. This will be required to calculate local date from UTC time. For most European countries it's already set to correct value. For US you will have to replace *require "date_format_europe"* with *require "date_format_america"* in _*init.lua_
 
-3. Edit *serial_api_clock.lua* and set UTC offset for your location. This will be required to calculate local date from UTC time. For most European countries it's already set to correct value. For US you will have to replace *require "date_format_europe"* with *require "date_format_america"* in _*init.lua_
+3. Register at [Open Weather](https://openweathermap.org) to get application id, you will have to provide it in the next step.
 
-4. Register at [Open Weather](https://openweathermap.org) to get application id, you will have to provide it in the next step.
-
-5. Create new file called: *credentials.lua* and specify login data for WiFi connection, it's just one line, for example: 
+4. Create new file called: *credentials.lua* and specify login data for WiFi connection, it's just one line, for example: 
 ```lua
 cred = {ssid = 'openwifi', password = '123456789'}
 owe.appid = 'your app id'
