@@ -43,42 +43,29 @@ This project (LEDClock) contains main software part,  you have to compile it and
 
 In [this blog post](http://maciej-miklas.blogspot.com/2017/03/weather-station-based-on-arduino-and.html#sloeber) you will find instrucitons howto compile it using Sloeber.
 
-# Software for NodeMCU/ESP8266
+# Software for NodeMCU/ESP32
 In order to provide weather and time to Arduino you will have to clone this project: https://github.com/maciejmiklas/NodeMCUUtils , modify few scripts and upload those afterwards into NodeMCU. Here are the steps:
 
-1. Compile firmware for NodeMCU so that it has all required modules. [Here](http://maciej-miklas.blogspot.com/2016/08/installing-nodemcu-v15-on-eps8266-esp.html) you will find instructions on it, and those are required modules: file, gpio, net, node, tmr, uart, wifi and cjson.
+1. Compile firmware for NodeMCU/ESP32 so that it has all required modules: file, mqtt, gpio, net, node, tmr, uart, wifi, sjson. Theres is also already precomipled version in repo.
 
 2. Clone project containing Lua scripts: https://github.com/maciejmiklas/NodeMCUUtils
 
-3. Edit *serialAPIClock.lua* and set UTC offset for your location. This will be required to calculate local date from UTC time. For most European countries it's already set to correct value. For US you will have to replace *require "dateformatEurope"* with *require "dateformatAmerica"* and rename all method calls from *setEuropeTime* to *setAmericaTime*
+3. Edit *serial_api_clock.lua* and set UTC offset for your location. This will be required to calculate local date from UTC time. For most European countries it's already set to correct value. For US you will have to replace *require "date_format_europe"* with *require "date_format_america"* in _*init.lua_
 
-3. Edit *yahooWeather.lua* and provide city and country that you would like to have weather for.
+4. Register at [Open Weather](https://openweathermap.org) to get application id, you will have to provide it in the next step.
 
-4. Create new file called: *credentials.lua* and specify login data for WiFi connection, it's just one line, for example: 
+5. Create new file called: *credentials.lua* and specify login data for WiFi connection, it's just one line, for example: 
 ```lua
 cred = {ssid = 'openwifi', password = '123456789'}
+owe.appid = 'your app id'
 ```
 
-5. Upload all Lua scirpts from main project's folder into NodeMCU:
-* credentials.lua
-* dateformat.lua
-* dateformatAmerica.lua
-* dateformatEurope.lua
-* ntp.lua
-* ntpClock.lua
-* serialAPI.lua
-* serialAPIClock.lua
-* serialAPIYahooWeather.lua
-* wlan.lua
-* yahooWeather.lua
-6. Now for the final touch we need the init-file that will be executed right after NodeMCU boots up. In our case we are using the only Serial Port in order to expose weather and clock API. This also means, that once our API is registered, it's impossible to execute standard NodeMCU commands, like file upload. For this reason init-script has two seconds delay, during this time you can still upload files, or just remove current *init.lua* file. 
+6. Upload all Lua scirpts from _/src_ and _/scr/init_ into NodeMCU.
 
-Init-files are there: *NodeMCUUtils/init/serialInit*
-* init.lua
-* serialInit.lua
 
 # Matching LIB versions
-* [LED Clock](https://github.com/maciejmiklas/LEDClock/archive/v1.1.0.zip)
-* [LED Display](https://github.com/maciejmiklas/LEDDisplay/releases/tag/v1.2.0)
-* [Arduino Logger](https://github.com/maciejmiklas/ArdLog/releases/tag/v2.1.0)
-* [NodeMCU weather and clock](https://github.com/maciejmiklas/NodeMCUUtils/releases/tag/v1.5.0)
+* [LED Clock](https://github.com/maciejmiklas/LEDClock) - v1.x.x
+* [LED Display](https://github.com/maciejmiklas/LEDDisplay) - v2.x.x
+* [Arduino Logger](https://github.com/maciejmiklas/ArdLog) - v2.x.x
+* [NodeMCU weather and clock](https://github.com/maciejmiklas/NodeMCUUtils) - v2.x.x
+Replace x with latest version, the are all compatibile.
